@@ -1,0 +1,53 @@
+{
+  "name": "avem-admin",
+  "version": "1.0.0",
+  "description": "The AVEM Administration webpage",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alex94puchades/avem-admin.git"
+  },
+  "keywords": [
+    "avem",
+    "ifmsa",
+    "uv",
+    "medicine",
+    "admin",
+    "react"
+  ],
+  "author": "Alejandro Caravaca Puchades <alex94puchades@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/alex94puchades/avem-admin/issues"
+  },
+  "homepage": "https://github.com/alex94puchades/avem-admin#readme",
+  "dependencies": {
+    "URIjs": "^1.16.0",
+    "babel": "^5.8.21",
+    "babel-runtime": "^5.8.20",
+    "bootstrap": "^3.3.5",
+    "cookies-js": "^1.2.1",
+    "jquery": "^2.1.4",
+    "lodash": "^3.10.1",
+    "react": "^0.13.3",
+    "react-bootstrap": "^0.24.3",
+    "react-router": "^0.13.3",
+    "react-router-bootstrap": "^0.18.0",
+    "reflux": "^0.2.11"
+  },
+  "devDependencies": {
+    "babel-core": "^5.8.21",
+    "babel-loader": "^5.3.2",
+    "css-loader": "^0.15.6",
+    "file-loader": "^0.8.4",
+    "html-webpack-plugin": "^1.6.1",
+    "less": "^2.5.1",
+    "less-loader": "^2.2.0",
+    "style-loader": "^0.12.3",
+    "url-loader": "^0.5.6",
+    "webpack": "^1.11.0"
+  }
+}
