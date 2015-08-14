@@ -1,5 +1,8 @@
 # Build directory
-dist
+/dist
+
+# KDE hidden folders
+.directory
 
 # Backup files
 *~
