@@ -3,9 +3,7 @@ import 'bootstrap/less/bootstrap.less';
 import _ from 'lodash';
 import React from 'react';
 import {RouteHandler} from 'react-router';
-import {Grid, Row, Col} from 'react-bootstrap';
-
-import {PageHeader} from 'react-bootstrap';
+import {Grid, Row, Col, PageHeader} from 'react-bootstrap';
 
 import {Authenticated} from '../../mixins';
 import NavigationPane from './NavigationPane.jsx';
@@ -32,7 +30,7 @@ export default React.createClass({
 						/>
 					</Col>
 					<Col md={9}>
-						<RouteHandler/>
+						<RouteHandler props={{ privileges: this.state.privileges}}/>
 					</Col>
 				</Row>
 			</Grid>

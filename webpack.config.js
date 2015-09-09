@@ -5,7 +5,8 @@ module.exports = {
 	target: 'web',
 	entry: './app/index.jsx',
 	plugins: [
-		new webpack.optimize.UglifyJsPlugin({ sourceMap: false }),
+		new webpack.optimize.DedupePlugin,
+		// new webpack.optimize.UglifyJsPlugin,
 		new htmlWebpackPlugin({
 			title: 'AVEM - Admin',
 			favicon: './app/favicon.ico',

@@ -7,13 +7,9 @@ import {Navigation} from 'react-router';
 import {NavItemLink} from 'react-router-bootstrap';
 
 const availableLinks = [{
-	name: 'Users',
-	url: 'user-search',
-	requires: ['user:enum'],
-}, {
-	name: 'Roles',
-	url: 'role-search',
-	requires: ['role:enum'],
+	name: 'Clients',
+	url: 'client-search',
+	requires: ['client:enum'],
 }];
 
 export default React.createClass({
@@ -35,13 +31,13 @@ export default React.createClass({
 	render: function() {
 		return (
 			<Nav bsStyle="pills" stacked>
-				{ _.map(availableLinks, (link, index) => {
-					let allowed = this.isLinkAllowed(link);
-					return <NavItemLink key={index}
-					                    to={link.url}
-					                    disabled={!allowed}
-					       >{link.name}</NavItemLink>;
-				}) }
+			{ _.map(availableLinks, (link, index) => {
+				let allowed = this.isLinkAllowed(link);
+				return <NavItemLink key={index}
+				                    to={link.url}
+				                    disabled={!allowed}
+				       >{link.name}</NavItemLink>;
+			}) }
 			</Nav>
 		);
 	},

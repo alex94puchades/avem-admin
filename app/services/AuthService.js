@@ -1,53 +1,58 @@
-import _ from 'lodash';
-import URI from 'URIjs';
+import request from 'superagent';
+import jsonapify from 'superagent-jsonapify';
 
-import ApiService from './ApiService';
+import {LoginStore} from '../stores';
+
+jsonapify(request);
 
 class AuthService {
 	login(username, password) {
 		return new Promise((resolve, reject) => {
-			ApiService.request('POST', 'http://localhost:8080/oauth2/token', {
-				contentType: 'application/x-www-form-urlencoded',
-				data: {
+			request.post('http://localhost:8080/oauth2/token')
+				.type('form').send({
+					username, password,
 					grant_type: 'password',
 					client_id: 'es.avem.WebAdmin',
-					username, password,
-				},
-			}).then(resolve, jqxhr => {
-				return jqxhr.responseJSON
-					? reject(new Error(jqxhr.responseJSON.error_description))
-					: reject(new Error(jqxhr.responseText));
-			});
+				}).end((err, res) => {
+					err ? reject(err) : resolve(res.body);
+				});
 		});
 	}
 
 	logout() {
 		return new Promise((resolve, reject) => {
-			let errorHandler = ApiService.errorHandler(reject);
-			ApiService.request('GET', 'http://localhost:8080').then(response => {
-				let sessionPath = response.links['this-session'];
-				if (!sessionPath) return reject('Invalid server response');
-				let sessionUri = URI('http://localhost:8080').path(sessionPath);
-				ApiService.request('DELETE', sessionUri).then(resolve, errorHandler);
-			}, errorHandler);
+			request.get('http://localhost:8080')
+				.set('Authorization', `Bearer ${LoginStore.accessToken}`)
+				.end((err, res) => {
+					if (err) return reject(err);
+					let sessionPath = res.body.links['this-session'];
+					if (!sessionPath) return reject(new Error('Invalid server response'));
+					request.del(`http://localhost:8080${sessionPath}`)
+						.set('Authorization', `Bearer ${LoginStore.accessToken}`)
+						.end((err, res) => {
+							err ? reject(err) : resolve(res.body);
+						});
+				});
 		});
 	}
 
 	getOwnPrivileges() {
 		return new Promise((resolve, reject) => {
-			let errorHandler = ApiService.errorHandler(reject);
-			ApiService.request('GET', 'http://localhost:8080').then(response => {
-				let userPath = response.links['this-user'];
-				if (!userPath) return reject('Invalid server response');
-				let userUri = URI('http://localhost:8080').path(userPath).query({
-					fields: 'role', 'fields[roles]': 'privileges',
+			request.get('http://localhost:8080')
+				.set('Authorization', `Bearer ${LoginStore.accessToken}`)
+				.end((err, res) => {
+					if (err) return reject(err);
+					let userPath = res.body.links['this-user'];
+					if (!userPath) return reject(new Error('Invalid server response'));
+					let params = { fields: 'role', 'fields[roles]': 'privileges' };
+					request.get(`http://localhost:8080${userPath}`)
+						.set('Authorization', `Bearer ${LoginStore.accessToken}`)
+						.query(params).end((err, res) => {
+							if (err) return reject(err);
+							let userInfo = res.body.data;
+							resolve(userInfo.role.privileges);
+						});
 				});
-				ApiService.request('GET', userUri).then(response => {
-					let role = response.data.relationships.role;
-					let roleInfo = _.find(response.included, role);
-					resolve(roleInfo.attributes.privileges);
-				}, errorHandler);
-			}, errorHandler);
 		});
 	}
 };

@@ -25,7 +25,7 @@ class ApiService {
 	errorHandler(callback) {
 		return jqxhr => {
 			return jqxhr.responseJSON
-				? callback(new Error(jsxhr.responseJSON.title))
+				? callback(new Error(jqxhr.responseJSON.title))
 				: callback(new Error(jqxhr.responseText));
 		};
 	}
