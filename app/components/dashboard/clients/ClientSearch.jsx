@@ -25,7 +25,17 @@ export default React.createClass({
 	componentDidMount: function() {
 		this.listenTo(ClientSearchStore, this.onClientsChanged);
 		ClientActions.removeClient.failed.listen(this.onDoRemoveClientFailed);
+		ClientActions.searchClients.failed.listen(this.onSearchClientsFailed);
+		ClientActions.removeClient.completed.listen(this.onDoRemoveClientCompleted);
 		ClientActions.searchClients({ name: '*' });
+	},
+	
+	onSearchClients: function(params) {
+		ClientActions.searchClients(params);
+	},
+	
+	onSearchClientsFailed: function(error) {
+		this.setState({ error });
 	},
 
 	onClientsChanged: function() {
@@ -36,21 +46,24 @@ export default React.createClass({
 		this.setState({ removeClient: client });
 	},
 	
+	onDoRemoveClient: function() {
+		ClientActions.removeClient(this.state.removeClient.id);
+	},
+	
+	onDoRemoveClientCompleted: function() {
+		this.setState({ removeClient: false });
+	},
+	
 	onDoRemoveClientFailed: function(error) {
 		this.setState({ error });
 	},
-
-	onDoRemoveClient: function() {
-		ClientActions.removeClient(this.state.removeClient.id);
-		this.setState({ removeClient: false });
-	},
-
+	
 	onDoNotRemoveClient: function() {
 		this.setState({ removeClient: false });
 	},
-
-	onSearchClients: function(params) {
-		ClientActions.searchClients(params);
+	
+	onDismissError: function() {
+		this.setState({ error: null });
 	},
 
 	render: function() {
@@ -60,17 +73,17 @@ export default React.createClass({
 		let canRemoveClient = _.includes(this.props.privileges, 'client:remove');
 		return (
 			<div>
+				<SearchBox ops={{ name: { multi: false, merge: 'append' },
+				                  trusted: { multi: false, merge: 'replace' } }}
+				           default="name" onSearch={this.onSearchClients}
+				           placeholder='Client search, ie: "client.name.*"'
+				/>
 				{ this.state.error ?
 					<Alert bsStyle="warning"
 					       dismissAfter={3000}
-					       onDismiss={this.reset}
+					       onDismiss={this.onDismissError}
 					>{lastError.message || 'Unknown error'}</Alert>
 				: '' }
-				<SearchBox ops={{ name: { multi: false },
-				                  trusted: { multi: false } }}
-				           default="name" onSearch={this.onSearchClients}
-				           placeholder='Client search, ie: "client.name.* trusted:true"'
-				/>
 				<Table hover responsive>
 					<thead>
 						<tr>
@@ -94,7 +107,7 @@ export default React.createClass({
 										            to="client-edit"
 										            disabled={!canEditClient}
 										            params={{ id: client.id }}
-										            query={{ 'return_to': 'client-search' }}
+										            query={{ return_to: 'client-search' }}
 										>Edit</ButtonLink>
 										<Button bsSize="small"
 										        bsStyle="danger"

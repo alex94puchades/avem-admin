@@ -23,7 +23,6 @@ export default Reflux.createStore({
 	},
 	
 	reset: function() {
-		this.lastError = null;
 		cookie.expire('access-token');
 		cookie.expire('refresh-token');
 		this.trigger();

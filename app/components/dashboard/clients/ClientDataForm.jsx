@@ -40,23 +40,23 @@ export default React.createClass({
 	},
 	
 	onNameChanged: function(event) {
-		let name = event.target.value;
+		let newName = event.target.value;
 		let data = _.clone(this.state.data);
-		_.set(data, 'attributes.name', name);
+		_.set(data, 'attributes.name', newName);
 		this.setState({ data });
 	},
 	
 	onTrustedChanged: function(event) {
-		let trusted = event.target.checked;
+		let newTrusted = event.target.checked;
 		let data = _.clone(this.state.data);
-		_.set(data, 'attributes.trusted', trusted);
+		_.set(data, 'attributes.trusted', newTrusted);
 		this.setState({ data });
 	},
 	
 	onRedirectUriChanged: function(event) {
-		let redirectUri = event.target.value || null;
+		let newRedirectUri = event.target.value || null;
 		let data = _.clone(this.state.data);
-		_.set(data, 'attributes.redirect-uri', redirectUri);
+		_.set(data, 'attributes.redirect-uri', newRedirectUri);
 		this.setState({ data });
 	},
 	
