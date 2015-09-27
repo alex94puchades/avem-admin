@@ -5,7 +5,7 @@ import React from 'react';
 import {Link} from 'react-router';
 import {ListenerMixin} from 'reflux';
 import {ButtonLink} from 'react-router-bootstrap';
-import {Button, ButtonGroup, Modal, Table} from 'react-bootstrap';
+import {Alert, Button, ButtonGroup, Modal, Table} from 'react-bootstrap';
 
 import {SearchBox} from '../../common';
 import {ClientActions} from '../../../actions';
@@ -16,6 +16,7 @@ export default React.createClass({
 
 	getInitialState: function() {
 		return {
+			error: null,
 			clients: [],
 			removeClient: false,
 		};
@@ -23,6 +24,7 @@ export default React.createClass({
 
 	componentDidMount: function() {
 		this.listenTo(ClientSearchStore, this.onClientsChanged);
+		ClientActions.removeClient.failed.listen(this.onDoRemoveClientFailed);
 		ClientActions.searchClients({ name: '*' });
 	},
 
@@ -32,6 +34,10 @@ export default React.createClass({
 
 	onRemoveClient: function(client) {
 		this.setState({ removeClient: client });
+	},
+	
+	onDoRemoveClientFailed: function(error) {
+		this.setState({ error });
 	},
 
 	onDoRemoveClient: function() {
@@ -48,12 +54,22 @@ export default React.createClass({
 	},
 
 	render: function() {
+		let lastError = this.state.error;
+		let canAddClient = _.includes(this.props.privileges, 'client:add');
+		let canEditClient = _.includes(this.props.privileges, 'client:edit');
+		let canRemoveClient = _.includes(this.props.privileges, 'client:remove');
 		return (
 			<div>
-				<SearchBox default="name"
-				           onSearch={this.onSearchClients}
-				           ops={{ name: { multi: false },
+				{ this.state.error ?
+					<Alert bsStyle="warning"
+					       dismissAfter={3000}
+					       onDismiss={this.reset}
+					>{lastError.message || 'Unknown error'}</Alert>
+				: '' }
+				<SearchBox ops={{ name: { multi: false },
 				                  trusted: { multi: false } }}
+				           default="name" onSearch={this.onSearchClients}
+				           placeholder='Client search, ie: "client.name.* trusted:true"'
 				/>
 				<Table hover responsive>
 					<thead>
@@ -61,7 +77,6 @@ export default React.createClass({
 							<th>Name</th>
 							<th>Trusted</th>
 							<th>Redirect URI</th>
-							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -72,15 +87,18 @@ export default React.createClass({
 								<td>
 									{client.trusted ? 'true' : 'false'}
 								</td>
-								<td>{client.redirectUri}</td>
+								<td>{client.redirectUri || 'n/a'}</td>
 								<td>
 									<ButtonGroup fill>
 										<ButtonLink bsSize="small"
 										            to="client-edit"
+										            disabled={!canEditClient}
 										            params={{ id: client.id }}
+										            query={{ 'return_to': 'client-search' }}
 										>Edit</ButtonLink>
 										<Button bsSize="small"
 										        bsStyle="danger"
+										        disabled={!canRemoveClient}
 										        onClick={this.onRemoveClient.bind(this, client)}
 										>Remove</Button>
 									</ButtonGroup>
@@ -90,7 +108,7 @@ export default React.createClass({
 					}) }
 					</tbody>
 				</Table>
-				<Modal show={this.state.removeClient != false}
+				<Modal show={!!this.state.removeClient}
 				       onHide={this.onDoNotRemoveClient}
 				>
 					<Modal.Header>
@@ -111,6 +129,10 @@ export default React.createClass({
 						>Do not remove</Button>
 					</Modal.Footer>
 				</Modal>
+				<ButtonLink to="client-new"
+				            disabled={!canAddClient}
+				            query={{ return_to: 'client-search' }}
+				>Add new client</ButtonLink>
 			</div>
 		);
 	},

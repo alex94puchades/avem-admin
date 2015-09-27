@@ -4,13 +4,25 @@ import Reflux from 'reflux';
 import {ClientService} from '../services';
 
 const actions = Reflux.createActions({
+	readClient: { asyncResult: true },
 	createClient: { asyncResult: true },
+	updateClient: { asyncResult: true },
 	removeClient: { asyncResult: true },
 	searchClients: { asyncResult: true },
 });
 
-actions.createClient.listen(function(clientInfo) {
-	ClientService.createClient(clientInfo)
+actions.readClient.listen(function(clientId) {
+	ClientService.readClient(clientId)
+		.then(this.completed, this.failed);
+});
+
+actions.createClient.listen(function(clientData) {
+	ClientService.createClient(clientData)
+		.then(this.completed, this.failed);
+});
+
+actions.updateClient.listen(function(clientId, clientData) {
+	ClientService.updateClient(clientId, clientData)
 		.then(this.completed, this.failed);
 });
 

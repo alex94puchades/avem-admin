@@ -10,6 +10,7 @@ export default React.createClass({
 		onSearch: React.PropTypes.func.isRequired,
 		ops: React.PropTypes.objectOf(React.PropTypes.shape({
 			multi: React.PropTypes.bool,
+			join: React.PropTypes.string,
 		})).isRequired,
 		default: (props, propName, componentName) => {
 			let defaultOp = props[propName];
@@ -22,7 +23,10 @@ export default React.createClass({
 		return {
 			default: 'default',
 			ops: {
-				default: { multi: true },
+				default: {
+					multi: true,
+					join: 'append',
+				},
 			},
 		};
 	},

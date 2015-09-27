@@ -3,13 +3,17 @@ import 'bootstrap/less/bootstrap.less';
 import _ from 'lodash';
 import React from 'react';
 import {RouteHandler} from 'react-router';
-import {Grid, Row, Col, PageHeader} from 'react-bootstrap';
+import {NavItemLink} from 'react-router-bootstrap';
+import {Nav, Grid, Row, Col, PageHeader} from 'react-bootstrap';
 
 import {Authenticated} from '../../mixins';
-import NavigationPane from './NavigationPane.jsx';
 
 export default React.createClass({
 	mixins: [Authenticated],
+	
+	componentDidMount: function() {
+		this.transitionTo('user-search');
+	},
 	
 	onLogout: function() {
 		this.transitionTo('logout');
@@ -25,12 +29,16 @@ export default React.createClass({
 				</Row>
 				<Row>
 					<Col md={3}>
-						<NavigationPane key={this.state.privileges}
-						                privileges={this.state.privileges}
-						/>
+						<Nav bsStyle="pills" stacked>
+							<NavItemLink to='user-search'>Users</NavItemLink>
+							<NavItemLink to='role-search'>Roles</NavItemLink>
+							<NavItemLink to='client-search'>Clients</NavItemLink>
+						</Nav>
 					</Col>
 					<Col md={9}>
-						<RouteHandler props={{ privileges: this.state.privileges}}/>
+						<RouteHandler key={this.state.privileges}
+						              privileges={this.state.privileges}
+						/>
 					</Col>
 				</Row>
 			</Grid>

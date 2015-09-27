@@ -7,7 +7,7 @@ import {ButtonInput, Input} from 'react-bootstrap';
 export default React.createClass({
 	propTypes: {
 		disabled: React.PropTypes.bool,
-		clientData: React.PropTypes.object,
+		roleData: React.PropTypes.object,
 		showResetButton: React.PropTypes.bool,
 		submitButtonText: React.PropTypes.string,
 		onSubmitData: React.PropTypes.func.isRequired,
@@ -15,25 +15,24 @@ export default React.createClass({
 	
 	getDefaultProps: function() {
 		return {
-			clientData: {
+			roleData: {
 				name: '',
-				trusted: false,
-				redirectUri: null,
+				description: '',
+				privileges: [],
 			},
 			disabled: false,
 			showResetButton: true,
-			submitButtonText: 'Save client',
+			submitButtonText: 'Save role',
 		};
 	},
 	
 	getInitialState: function() {
-		let {name, trusted, redirectUri} = this.props.clientData;
+		let {name, description, privileges} = this.props.roleData;
 		return {
 			data: {
-				type: 'clients',
+				type: 'roles',
 				attributes: {
-					name, trusted,
-					'redirect-uri': redirectUri,
+					name, description, privileges,
 				},
 			},
 		};
@@ -46,17 +45,10 @@ export default React.createClass({
 		this.setState({ data });
 	},
 	
-	onTrustedChanged: function(event) {
-		let trusted = event.target.checked;
+	onDescriptionChanged: function(event) {
+		let description = event.target.value || null;
 		let data = _.clone(this.state.data);
-		_.set(data, 'attributes.trusted', trusted);
-		this.setState({ data });
-	},
-	
-	onRedirectUriChanged: function(event) {
-		let redirectUri = event.target.value || null;
-		let data = _.clone(this.state.data);
-		_.set(data, 'attributes.redirect-uri', redirectUri);
+		_.set(data, 'attributes.description', description);
 		this.setState({ data });
 	},
 	
@@ -66,30 +58,23 @@ export default React.createClass({
 	},
 	
 	render: function() {
-		let canEditClient = _.includes(this.props.privileges, 'client:edit');
-		let canTrustClient = _.includes(this.props.privileges, 'client:trust');
+		let canEditRole = _.includes(this.props.privileges, 'role:edit');
 		return (
 			<form onSubmit={this.onSubmitForm}>
 				<Input type="text"
 				       label="Name"
 				       required
-				       readOnly={!canEditClient}
+				       readOnly={!canEditRole}
 				       value={this.state.data.attributes.name}
 				       onChange={this.onNameChanged}
 				/>
 				<Input type="text"
-				       label="Redirect URI"
-				       readOnly={!canEditClient}
-				       value={this.state.data.attributes['redirect-uri']}
-				       onChange={this.onRedirectUriChanged}
+				       label="Description"
+				       readOnly={!canEditRole}
+				       value={this.state.data.attributes.description}
+				       onChange={this.onDescriptionChanged}
 				/>
-				<Input type="checkbox"
-				       label="Trusted"
-				       readOnly={!canEditClient || !canTrustClient}
-				       checked={this.state.data.attributes.trusted}
-				       onChange={this.onTrustedChanged}
-				/>
-				{ canEditClient ? ([
+				{ canEditRole ? ([
 					<ButtonInput key={0}
 					             type="submit"
 					             bsStyle="primary"

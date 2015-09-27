@@ -2,18 +2,14 @@ import React from 'react';
 import {ListenerMixin} from 'reflux';
 import {Navigation} from 'react-router';
 
-import {LoginStore} from '../../stores';
 import {LoginActions} from '../../actions';
 import {Authenticated} from '../../mixins';
 
 export default React.createClass({
-	mixins: [
-		ListenerMixin,
-		Authenticated,
-	],
+	mixins: [Authenticated],
 	
 	componentDidMount: function() {
-		this.listenTo(LoginStore, this.onLoginChanged);
+		LoginActions.logout.completed.listen(this.onLogoutCompleted);
 	},
 	
 	componentWillUpdate: function(nextProps, nextState) {
@@ -21,9 +17,8 @@ export default React.createClass({
 			LoginActions.logout();
 	},
 	
-	onLoginChanged: function() {
-		if (!LoginStore.authenticated)
-			this.transitionTo('login');
+	onLogoutCompleted: function() {
+		this.transitionTo('login');
 	},
 	
 	render: function() {

@@ -6,21 +6,21 @@ import {LoginStore} from '../stores';
 
 jsonapify(request);
 
-class ClientService {
-	createClient(data) {
+class RoleService {
+	createRole(roleData) {
 		return new Promise((resolve, reject) => {
-			request.post('http://localhost:8080/clients')
+			request.post('http://localhost:8080/roles')
 				.set('Authorization', `Bearer ${LoginStore.accessToken}`)
-				.type('application/vnd.api+json').send({ data })
+				.type('application/vnd.api+json').send({ data: roleData })
 				.end((err, res) => {
 					err ? reject(err) : resolve(res.body);
 				});
 		});
 	}
 	
-	readClient(clientId) {
+	readRole(roleId) {
 		return new Promise((resolve, reject) => {
-			request.get(`http://localhost:8080/clients/${clientId}`)
+			request.get(`http://localhost:8080/roles/${clientId}`)
 				.set('Authorization', `Bearer ${LoginStore.accessToken}`)
 				.type('application/vnd.api+json').end((err, res) => {
 					err ? reject(err) : resolve(res.body);
@@ -28,9 +28,9 @@ class ClientService {
 		});
 	}
 	
-	updateClient(clientId, data) {
+	updateRole(roleId, data) {
 		return new Promise((resolve, reject) => {
-			request.put(`http://localhost:8080/clients/${clientId}`)
+			request.put(`http://localhost:8080/roles/${roleId}`)
 				.set('Authorization', `Bearer ${LoginStore.accessToken}`)
 				.type('application/vnd.api+json').send({ data })
 				.end((err, res) => {
@@ -39,9 +39,9 @@ class ClientService {
 		});
 	}
 	
-	removeClient(clientId) {
+	removeRole(roleId) {
 		return new Promise((resolve, reject) => {
-			request.del(`http://localhost:8080/clients/${clientId}`)
+			request.del(`http://localhost:8080/roles/${roleId}`)
 				.set('Authorization', `Bearer ${LoginStore.accessToken}`)
 				.end((err, res) => {
 					err ? reject(err) : resolve(res.body);
@@ -49,13 +49,13 @@ class ClientService {
 		});
 	}
 	
-	searchClients(query, limit, offset) {
+	searchRoles(query, limit, offset) {
 		offset = offset || 0;
 		return new Promise((resolve, reject) => {
 			let filter = _.assign({
 				'page[offset]': offset, 'page[limit]': limit
 			}, _.mapKeys(query, (value, field) => `filter[${field}]`));
-			request.get('http://localhost:8080/clients').query(filter)
+			request.get('http://localhost:8080/roles').query(filter)
 				.set('Authorization', `Bearer ${LoginStore.accessToken}`)
 				.end((err, res) => {
 					err ? reject(err) : resolve(res.body.data);
@@ -64,4 +64,4 @@ class ClientService {
 	}
 };
 
-export default new ClientService;
+export default new RoleService;
