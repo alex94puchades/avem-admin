@@ -4,12 +4,38 @@ import {Input} from 'react-bootstrap';
 import {RoleService} from '../../../services';
 
 export default React.createClass({
+	propTypes: {
+		disabled: React.PropTypes.bool,
+		userData: React.PropTypes.object,
+		showResetButton: React.PropTypes.bool,
+		submitButtonText: React.PropTypes.string,
+		onSubmitData: React.PropTypes.func.isRequired,
+	},
+	
+	getDefaultProps: function() {
+		return {
+			userData: {
+				role: null,
+				email: null,
+				password: null,
+			},
+			disabled: false,
+			showResetButton: true,
+			submitButtonText: 'Save user',
+		},
+	},
+	
 	getInitialState: function() {
 		return {
-			user: {
-				role: this.props.role || null,
-				email: this.props.email || '',
-				password: this.props.password || '',
+			data: {
+				type: 'users',
+				attributes: {
+					email: this.props.email || '',
+					password: this.props.password || '',
+				},
+				relationships: {
+					role: this.props.role || null,
+				},
 			},
 			availableRoles: null,
 		};
@@ -22,33 +48,24 @@ export default React.createClass({
 	},
 	
 	onEmailChanged: function(event) {
-		this.setState({
-			user: {
-				attributes: {
-					email: event.target.value,
-				},
-			},
-		});
+		let newEmail = event.target.value;
+		let data = _.clone(this.state.data);
+		_.set(data, 'attributes.email', newEmail);
+		this.setState({ data });
 	},
 	
-	onPasswordChanged: function(target) {
-		this.setState({
-			user: {
-				attributes: {
-					password: event.target.value,
-				},
-			},
-		});
+	onPasswordChanged: function(event) {
+		let newPassword = event.target.value;
+		let data = _.clone(this.state.data);
+		_.set(data, 'attributes.password', newPassword);
+		this.setState({ data });
 	},
 	
-	onRoleChanged: function(target) {
-		this.setState({
-			role: {
-				attributes: {
-					role: event.target.value,
-				},
-			},
-		});
+	onRoleChanged: function(event) {
+		let newRole = event.target.value;
+		let data = _.clone(this.state.data);
+		_.set(data, 'relationships.role', newRole);
+		this.setState({ data });
 	},
 	
 	render: function() {
@@ -56,13 +73,13 @@ export default React.createClass({
 			<form onSubmit={this.props.onSendData}>
 				<Input type="text"
 				       label="Email"
-				       value={this.state.user.email}
 				       onChange={this.onEmailChanged}
+				       value={this.state.data.attributes.email}
 				/>
 				<Input type="password"
 				       label="Password"
-				       value={this.state.user.password}
 				       onChange={this.onPasswordChanged}
+				       value={this.state.data.attributes.password}
 				/>
 				<Input type="select"
 				       label="Role"

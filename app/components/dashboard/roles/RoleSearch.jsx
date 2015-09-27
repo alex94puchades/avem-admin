@@ -17,13 +17,25 @@ export default React.createClass({
 	getInitialState: function() {
 		return {
 			roles: [],
+			error: null,
 			removeRole: false,
 		};
 	},
 
 	componentDidMount: function() {
 		this.listenTo(RoleSearchStore, this.onRolesChanged);
+		RoleActions.searchRoles.failed.listen(this.onSearchRolesFailed);
+		RoleActions.removeRole.failed.listen(this.onDoRemoveRoleFailed);
+		RoleActions.removeRole.completed.listen(this.onDoRemoveRoleCompleted);
 		RoleActions.searchRoles({ name: '*' });
+	},
+	
+	onSearchRoles: function(params) {
+		RoleActions.searchRoles(params);
+	},
+	
+	onSearchRolesFailed: function(error) {
+		this.setState({ error });
 	},
 
 	onRolesChanged: function() {
@@ -36,15 +48,22 @@ export default React.createClass({
 
 	onDoRemoveRole: function() {
 		RoleActions.removeRole(this.state.removeRole.id);
+	},
+	
+	onDoRemoveRoleCompleted: function() {
 		this.setState({ removeRole: false });
+	},
+	
+	onDoRemoveRoleFailed: function(error) {
+		this.setState({ error });
 	},
 
 	onDoNotRemoveRole: function() {
 		this.setState({ removeRole: false });
 	},
-
-	onSearchRoles: function(params) {
-		RoleActions.searchRoles(params);
+	
+	onDismissError: function() {
+		this.setState({ error: null });
 	},
 
 	render: function() {
@@ -58,6 +77,12 @@ export default React.createClass({
 				           default="name" onSearch={this.onSearchRoles}
 				           placeholder='Role search, ie: admin, guest...'
 				/>
+				{ this.state.error ?
+					<Alert bsStyle="warning"
+					       dismissAfter={3000}
+					       onDismiss={this.onDismissError}
+					>{lastError.message || 'Unknown error'}</Alert>
+				: '' }
 				<Table hover responsive>
 					<thead>
 						<tr>
@@ -101,7 +126,8 @@ export default React.createClass({
 					</Modal.Header>
 					<Modal.Body>
 						This action cannot be undone. Removing a role can
-						corrupt the database. Do you want to continue?
+						potentially corrupt the database. Do you want to
+						continue?
 					</Modal.Body>
 					<Modal.Footer>
 						<Button bsStyle="danger"

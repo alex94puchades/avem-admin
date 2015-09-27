@@ -4,11 +4,9 @@ export { default as LoginPage  } from './login/LoginPage';
 export { default as LogoutPage } from './logout/LogoutPage';
 export { default as Dashboard } from './dashboard/Dashboard';
 
-/*
 export { default as UserSearch } from './dashboard/users/UserSearch';
 export { default as UserEdit } from './dashboard/users/UserEdit';
 export { default as UserNew } from './dashboard/users/UserNew';
-*/
 
 export { default as RoleSearch } from './dashboard/roles/RoleSearch';
 export { default as RoleEdit } from './dashboard/roles/RoleEdit';
