@@ -29,16 +29,18 @@ export default React.createClass({
 	render: function() {
 		let lastError = this.state.error;
 		return (
-			{ this.state.error ?
-				<Alert bsStyle="warning"
-				       dismissAfter={3000}
-				       onDismiss={this.reset}
-				>{lastError.message || 'Unknown error'}</Alert>
-			: '' }
-			<ClientDataForm showResetButton={true}
-			                onSubmitData={this.onSubmitData}
-			                privileges={this.props.privileges}
-			/>
+			<div>
+				{ this.state.error ?
+					<Alert bsStyle="warning"
+						   dismissAfter={3000}
+						   onDismiss={this.reset}
+					>{lastError.message || 'Unknown error'}</Alert>
+				: '' }
+				<ClientDataForm showResetButton={true}
+					            onSubmitData={this.onSubmitData}
+					            privileges={this.props.privileges}
+				/>
+			</div>
 		);
 	},
 });
