@@ -20,7 +20,7 @@ class RoleService {
 	
 	readRole(roleId) {
 		return new Promise((resolve, reject) => {
-			request.get(`http://localhost:8080/roles/${clientId}`)
+			request.get(`http://localhost:8080/roles/${roleId}`)
 				.set('Authorization', `Bearer ${LoginStore.accessToken}`)
 				.type('application/vnd.api+json').end((err, res) => {
 					err ? reject(err) : resolve(res.body);

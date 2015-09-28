@@ -7,7 +7,7 @@ import {LoginStore} from '../stores';
 jsonapify(request);
 
 class UserService {
-	createRole(userData) {
+	createUser(userData) {
 		return new Promise((resolve, reject) => {
 			request.post('http://localhost:8080/users')
 				.set('Authorization', `Bearer ${LoginStore.accessToken}`)
