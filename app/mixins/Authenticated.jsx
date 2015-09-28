@@ -1,15 +1,12 @@
 import _ from 'lodash';
 import React from 'react';
-import {State, Navigation, RouteHandler} from 'react-router';
+import {State, Navigation} from 'react-router';
 
 import {LoginStore} from '../stores';
 import {AuthService} from '../services';
 
 export default {
-	mixins: [
-		State,
-		Navigation,
-	],
+	mixins: [Navigation, State],
 	
 	getInitialState: function() {
 		return {
