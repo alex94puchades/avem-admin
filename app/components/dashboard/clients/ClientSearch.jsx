@@ -80,7 +80,6 @@ export default React.createClass({
 				/>
 				{ this.state.error ?
 					<Alert bsStyle="warning"
-					       dismissAfter={3000}
 					       onDismiss={this.onDismissError}
 					>{lastError.message || 'Unknown error'}</Alert>
 				: '' }

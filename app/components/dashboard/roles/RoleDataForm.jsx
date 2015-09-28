@@ -27,7 +27,7 @@ export default React.createClass({
 	},
 	
 	getInitialState: function() {
-		let {name, description, privileges} = this.props.roleData;
+		let {name, description, privileges} = this.props.roleData || {};
 		return {
 			data: {
 				type: 'roles',
@@ -62,17 +62,17 @@ export default React.createClass({
 		return (
 			<form onSubmit={this.onSubmitForm}>
 				<Input type="text"
-				       label="Name"
 				       required
+				       label="Name"
 				       readOnly={!canEditRole}
-				       value={this.state.data.attributes.name}
 				       onChange={this.onNameChanged}
+				       value={this.state.data.attributes.name}
 				/>
 				<Input type="text"
 				       label="Description"
 				       readOnly={!canEditRole}
-				       value={this.state.data.attributes.description}
 				       onChange={this.onDescriptionChanged}
+				       value={this.state.data.attributes.description}
 				/>
 				{ canEditRole ? ([
 					<ButtonInput key={0}

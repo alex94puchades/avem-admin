@@ -27,7 +27,7 @@ export default React.createClass({
 	},
 	
 	getInitialState: function() {
-		let {name, trusted, redirectUri} = this.props.clientData;
+		let {name, trusted, redirectUri} = this.props.clientData || {};
 		return {
 			data: {
 				type: 'clients',
@@ -70,24 +70,24 @@ export default React.createClass({
 		let canTrustClient = _.includes(this.props.privileges, 'client:trust');
 		return (
 			<form onSubmit={this.onSubmitForm}>
-				<Input type="text"
+				<Input required
+				       type="text"
 				       label="Name"
-				       required
 				       readOnly={!canEditClient}
-				       value={this.state.data.attributes.name}
 				       onChange={this.onNameChanged}
+				       value={this.state.data.attributes.name}
 				/>
 				<Input type="text"
 				       label="Redirect URI"
 				       readOnly={!canEditClient}
-				       value={this.state.data.attributes['redirect-uri']}
 				       onChange={this.onRedirectUriChanged}
+				       value={this.state.data.attributes['redirect-uri']}
 				/>
 				<Input type="checkbox"
 				       label="Trusted"
+				       onChange={this.onTrustedChanged}
 				       readOnly={!canEditClient || !canTrustClient}
 				       checked={this.state.data.attributes.trusted}
-				       onChange={this.onTrustedChanged}
 				/>
 				{ canEditClient ? ([
 					<ButtonInput key={0}

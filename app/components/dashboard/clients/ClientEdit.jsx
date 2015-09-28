@@ -1,30 +1,35 @@
+import 'bootstrap/less/bootstrap.less';
+
 import React from 'react';
-import {Navigation} from 'react-router';
+import {Alert} from 'react-bootstrap';
+import {Navigation, State} from 'react-router';
 
 import ClientDataForm from './ClientDataForm';
 import {ClientActions} from '../../../actions';
+import {ClientService} from '../../../services';
 
 export default React.createClass({
-	mixins: [Navigation],
+	mixins: [Navigation, State],
 	
 	getInitialState: function() {
 		return {
+			error: null,
 			client: null,
 		};
 	},
 	
 	componentDidMount: function() {
 		let clientId = this.props.params.id;
-		ClientActions.readClient(clientId);
+		ClientActions.updateClient.failed.listen(this.onUpdateClientFailed);
+		ClientActions.updateClient.completed.listen(this.onUpdateClientCompleted);
+		ClientService.readClient(clientId).then(response => {
+			this.setState({ client: response.data });
+		});
 	},
 	
-	onReadClientCompleted: function(client) {
-		this.setState({ client });
-	},
-	
-	onSubmitData: function(data) {
+	onSubmitData: function(clientData) {
 		let clientId = this.props.params.id;
-		ClientActions.updateClient(clientId, data);
+		ClientActions.updateClient(clientId, clientData);
 	},
 	
 	onUpdateClientCompleted: function() {
@@ -33,15 +38,31 @@ export default React.createClass({
 			this.transitionTo(returnTo);
 	},
 	
+	onUpdateClientFailed: function(error) {
+		this.setState({ error });
+	},
+	
+	onDismissError: function() {
+		this.setState({ error: null });
+	},
+	
 	render: function() {
+		let lastError = this.state.error;
 		return (
-			<ClientDataForm showResetButton={true}
-			                key={this.state.client}
-			                clientData={this.state.client}
-			                onSubmitData={this.onSubmitData}
-			                privileges={this.props.privileges}
-			                disabled={this.state.client !== null}
-			/>
+			<div>
+				{ this.state.error ?
+					<Alert bsStyle="warning"
+					       onDismiss={this.onDismissError}
+					>{ lastError.message || 'Unknown error' }</Alert>
+				: '' }
+				<ClientDataForm key={this.state.client}
+					            showResetButton={false}
+					            clientData={this.state.client}
+					            onSubmitData={this.onSubmitData}
+					            privileges={this.props.privileges}
+					            disabled={this.state.client === null}
+				/>
+			</div>
 		);
 	},
 });

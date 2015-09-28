@@ -5,7 +5,7 @@ import React from 'react';
 import {Link} from 'react-router';
 import {ListenerMixin} from 'reflux';
 import {ButtonLink} from 'react-router-bootstrap';
-import {Button, ButtonGroup, Modal, Table} from 'react-bootstrap';
+import {Alert, Button, ButtonGroup, Modal, Table} from 'react-bootstrap';
 
 import {SearchBox} from '../../common';
 import {RoleActions} from '../../../actions';
@@ -67,6 +67,7 @@ export default React.createClass({
 	},
 
 	render: function() {
+		let lastError = this.state.error;
 		let canAddRole = _.includes(this.props.privileges, 'role:add');
 		let canEditRole = _.includes(this.props.privileges, 'role:edit');
 		let canRemoveRole = _.includes(this.props.privileges, 'role:remove');
@@ -79,7 +80,6 @@ export default React.createClass({
 				/>
 				{ this.state.error ?
 					<Alert bsStyle="warning"
-					       dismissAfter={3000}
 					       onDismiss={this.onDismissError}
 					>{lastError.message || 'Unknown error'}</Alert>
 				: '' }
