@@ -11,10 +11,6 @@ import {Authenticated} from '../../mixins';
 export default React.createClass({
 	mixins: [Authenticated],
 	
-	componentDidMount: function() {
-		this.transitionTo('user-search');
-	},
-	
 	onLogout: function() {
 		this.transitionTo('logout');
 	},
