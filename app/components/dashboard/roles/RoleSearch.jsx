@@ -125,7 +125,7 @@ export default React.createClass({
 						</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
-						This action cannot be undone. Removing a role can
+						This action cannot be undone. Removing a role can also
 						potentially corrupt the database. Do you want to
 						continue?
 					</Modal.Body>

@@ -59,7 +59,7 @@ export default React.createClass({
 	},
 	
 	onDoNotRemoveUser: function() {
-		this.setState({ removeUser: null });
+		this.setState({ removeUser: false });
 	},
 	
 	onDismissError: function() {
@@ -67,6 +67,7 @@ export default React.createClass({
 	},
 
 	render: function() {
+		let lastError = this.state.error;
 		let canAddUser = _.includes(this.props.privileges, 'user:add');
 		let canEditUser = _.includes(this.props.privileges, 'user:edit');
 		let canRemoveUser = _.includes(this.props.privileges, 'user:remove');
@@ -79,7 +80,6 @@ export default React.createClass({
 				/>
 				{ this.state.error ?
 					<Alert bsStyle="warning"
-					       dismissAfter={3000}
 					       onDismiss={this.onDismissError}
 					>{lastError.message || 'Unknown error'}</Alert>
 				: '' }
@@ -128,7 +128,9 @@ export default React.createClass({
 						</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
-						This action cannot be undone. Do you want to continue?
+						This action cannot be undone. Removing an user can also
+						potentially corrupt the database. Do you want to
+						continue?
 					</Modal.Body>
 					<Modal.Footer>
 						<Button bsStyle="danger"
