@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import Reflux from 'reflux';
 
 import {ClientService} from '../services';
