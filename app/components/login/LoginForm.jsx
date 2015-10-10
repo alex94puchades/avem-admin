@@ -8,9 +8,9 @@ import {
 	ButtonInput,
 } from 'react-bootstrap';
 
-import LoginForm from './LoginForm.jsx';
-import {LoginStore} from '../../stores';
-import {LoginActions} from '../../actions';
+import {CredentialStore} from '../../stores';
+import {AuthActions} from '../../actions';
+import LoginForm from './LoginForm';
 
 export default React.createClass({
 	mixins: [ListenerMixin],
@@ -29,17 +29,17 @@ export default React.createClass({
 	},
 	
 	componentDidMount: function() {
-		this.listenTo(LoginStore, this.onLoginChanged);
+		this.listenTo(CredentialStore, this.onLoginChanged);
 	},
 	
 	onLoginChanged: function() {
-		if (!LoginStore.authenticated)
+		if (!CredentialStore.authenticated)
 			this.setState({ password: '' });
 	},
 	
 	login: function(event) {
 		event.preventDefault();
-		LoginActions.login(this.state.username, this.state.password);
+		AuthActions.login(this.state.username, this.state.password);
 	},
 	
 	reset: function(event) {

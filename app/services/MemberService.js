@@ -6,31 +6,31 @@ import {CredentialStore} from '../stores';
 
 jsonapify(request);
 
-class RoleService {
-	createRole(roleData) {
+class MemberService {
+	createMember(memberData) {
 		return new Promise((resolve, reject) => {
-			request.post('http://localhost:8080/roles')
+			request.post('http://localhost:8080/members')
 				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
-				.type('application/vnd.api+json').send({ data: roleData })
+				.type('application/vnd.api+json').send({ data: memberData })
 				.end((err, res) => {
 					err ? reject(err) : resolve(res.body);
 				});
 		});
 	}
-	
-	readRole(roleId) {
+
+	readMember(memberId) {
 		return new Promise((resolve, reject) => {
-			request.get(`http://localhost:8080/roles/${roleId}`)
+			request.get(`http://localhost:8080/members/${memberId}`)
 				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 				.type('application/vnd.api+json').end((err, res) => {
 					err ? reject(err) : resolve(res.body);
 				});
 		});
 	}
-	
-	updateRole(roleId, data) {
+
+	updateMember(memberId, data) {
 		return new Promise((resolve, reject) => {
-			request.put(`http://localhost:8080/roles/${roleId}`)
+			request.put(`http://localhost:8080/members/${memberId}`)
 				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 				.type('application/vnd.api+json').send({ data })
 				.end((err, res) => {
@@ -38,24 +38,24 @@ class RoleService {
 				});
 		});
 	}
-	
-	removeRole(roleId) {
+
+	removeMember(memberId) {
 		return new Promise((resolve, reject) => {
-			request.del(`http://localhost:8080/roles/${roleId}`)
+			request.del(`http://localhost:8080/members/${memberId}`)
 				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 				.end((err, res) => {
 					err ? reject(err) : resolve(res.body);
 				});
 		});
 	}
-	
-	searchRoles(query, limit, offset) {
+
+	searchMembers(query, limit, offset) {
 		offset = offset || 0;
 		return new Promise((resolve, reject) => {
 			let filter = _.assign({
 				'page[offset]': offset, 'page[limit]': limit
 			}, _.mapKeys(query, (value, field) => `filter[${field}]`));
-			request.get('http://localhost:8080/roles').query(filter)
+			request.get('http://localhost:8080/members').query(filter)
 				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 				.end((err, res) => {
 					err ? reject(err) : resolve(res.body.data);
@@ -64,4 +64,4 @@ class RoleService {
 	}
 };
 
-export default new RoleService;
+export default new MemberService;

@@ -1,21 +1,16 @@
 import 'bootstrap/less/bootstrap.less';
 
 import React from 'react';
-import {ListenerMixin} from 'reflux';
 import {Alert} from 'react-bootstrap';
 import {State, Navigation} from 'react-router';
 
-import LoginForm from './LoginForm.jsx';
-import {LoginStore} from '../../stores';
-import {LoginActions} from '../../actions';
+import {CredentialStore} from '../../stores';
+import {AuthActions} from '../../actions';
+import LoginForm from './LoginForm';
 
 export default React.createClass({
-	mixins: [
-		State,
-		Navigation,
-		ListenerMixin,
-	],
-	
+	mixins: [State,	Navigation],
+
 	getInitialState: function() {
 		return {
 			error: null,
@@ -23,8 +18,8 @@ export default React.createClass({
 	},
 	
 	componentDidMount: function() {
-		LoginActions.login.completed.listen(this.onLoginCompleted);
-		LoginActions.login.failed.listen(this.onLoginFailed);
+		AuthActions.login.completed.listen(this.onLoginCompleted);
+		AuthActions.login.failed.listen(this.onLoginFailed);
 	},
 	
 	onLoginCompleted: function() {

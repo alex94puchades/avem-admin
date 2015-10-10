@@ -2,7 +2,7 @@ import _ from 'lodash';
 import request from 'superagent';
 import jsonapify from 'superagent-jsonapify';
 
-import {LoginStore} from '../stores';
+import {CredentialStore} from '../stores';
 
 jsonapify(request);
 
@@ -10,7 +10,7 @@ class ClientService {
 	createClient(data) {
 		return new Promise((resolve, reject) => {
 			request.post('http://localhost:8080/clients')
-				.set('Authorization', `Bearer ${LoginStore.accessToken}`)
+				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 				.type('application/vnd.api+json').send({ data })
 				.end((err, res) => {
 					err ? reject(err) : resolve(res.body);
@@ -21,7 +21,7 @@ class ClientService {
 	readClient(clientId) {
 		return new Promise((resolve, reject) => {
 			request.get(`http://localhost:8080/clients/${clientId}`)
-				.set('Authorization', `Bearer ${LoginStore.accessToken}`)
+				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 				.type('application/vnd.api+json').end((err, res) => {
 					err ? reject(err) : resolve(res.body);
 				});
@@ -31,7 +31,7 @@ class ClientService {
 	updateClient(clientId, data) {
 		return new Promise((resolve, reject) => {
 			request.put(`http://localhost:8080/clients/${clientId}`)
-				.set('Authorization', `Bearer ${LoginStore.accessToken}`)
+				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 				.type('application/vnd.api+json').send({ data })
 				.end((err, res) => {
 					err ? reject(err) : resolve(res.body);
@@ -42,7 +42,7 @@ class ClientService {
 	removeClient(clientId) {
 		return new Promise((resolve, reject) => {
 			request.del(`http://localhost:8080/clients/${clientId}`)
-				.set('Authorization', `Bearer ${LoginStore.accessToken}`)
+				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 				.end((err, res) => {
 					err ? reject(err) : resolve(res.body);
 				});
@@ -56,7 +56,7 @@ class ClientService {
 				'page[offset]': offset, 'page[limit]': limit
 			}, _.mapKeys(query, (value, field) => `filter[${field}]`));
 			request.get('http://localhost:8080/clients').query(filter)
-				.set('Authorization', `Bearer ${LoginStore.accessToken}`)
+				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 				.end((err, res) => {
 					err ? reject(err) : resolve(res.body.data);
 				});

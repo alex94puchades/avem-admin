@@ -2,8 +2,8 @@ import _ from 'lodash';
 import React from 'react';
 import {State, Navigation} from 'react-router';
 
-import {LoginStore} from '../stores';
 import {AuthService} from '../services';
+import {CredentialStore} from '../stores';
 
 export default {
 	mixins: [Navigation, State],
@@ -15,7 +15,7 @@ export default {
 	},
 	
 	componentDidMount: function() {
-		if (!LoginStore.authenticated) {
+		if (!CredentialStore.authenticated) {
 			this.transitionTo('login', null, {
 				return_to: this.getPath(),
 			});

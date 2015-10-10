@@ -1,11 +1,11 @@
 import Reflux from 'reflux';
 import cookie from 'cookies-js';
 
-import {LoginActions} from '../actions';
+import {AuthActions} from '../actions';
 
 export default Reflux.createStore({
-	listenables: LoginActions,
-	
+	listenables: AuthActions,
+
 	init: function() {
 		Object.defineProperties(this, {
 			accessToken: {
@@ -21,29 +21,29 @@ export default Reflux.createStore({
 			},
 		});
 	},
-	
+
 	reset: function() {
 		cookie.expire('access-token');
 		cookie.expire('refresh-token');
 		this.trigger();
 	},
-	
+
 	onLoginCompleted: function(accessToken, refreshToken) {
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
 		this.trigger();
 	},
-	
+
 	onLoginFailed: function(err) {
 		this.accessToken = null;
 		this.refreshToken = null;
 		this.trigger();
 	},
-	
+
 	onLogoutCompleted: function() {
 		this.reset();
 	},
-	
+
 	onLogoutFailed: function() {
 		this.reset();
 	},
