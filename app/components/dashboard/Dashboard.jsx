@@ -29,6 +29,7 @@ export default React.createClass({
 							<NavItemLink to='user-search'>Users</NavItemLink>
 							<NavItemLink to='role-search'>Roles</NavItemLink>
 							<NavItemLink to='client-search'>Clients</NavItemLink>
+							<NavItemLink to='member-search'>Members</NavItemLink>
 						</Nav>
 					</Col>
 					<Col md={9}>

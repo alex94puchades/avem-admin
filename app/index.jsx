@@ -21,6 +21,9 @@ import {
 	UserSearch,
 	UserNew,
 	UserEdit,
+	MemberSearch,
+	MemberNew,
+	MemberEdit,
 } from './components';
 
 const routes = (
@@ -37,6 +40,9 @@ const routes = (
 			<Route name="client-search" path="/clients" handler={ClientSearch}/>
 			<Route name="client-new" path="/clients/new" handler={ClientNew}/>
 			<Route name="client-edit" path="/clients/:id" handler={ClientEdit}/>
+			<Route name="member-search" path="/members" handler={MemberSearch}/>
+			<Route name="member-new" path="/members/new" handler={MemberNew}/>
+			<Route name="member-edit" path="/members/:id" handler={MemberEdit}/>
 		</Route>
 	</Route>
 );

@@ -15,3 +15,7 @@ export { default as RoleNew } from './dashboard/roles/RoleNew';
 export { default as ClientSearch } from './dashboard/clients/ClientSearch';
 export { default as ClientEdit } from './dashboard/clients/ClientEdit';
 export { default as ClientNew } from './dashboard/clients/ClientNew';
+
+export { default as MemberSearch } from './dashboard/members/MemberSearch';
+export { default as MemberEdit } from './dashboard/members/MemberEdit';
+export { default as MemberNew } from './dashboard/members/MemberNew';
