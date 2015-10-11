@@ -10,6 +10,7 @@ import {Alert, Button, ButtonGroup, Modal, Table} from 'react-bootstrap';
 import {SearchBox} from '../../common';
 import {RoleActions} from '../../../actions';
 import {RoleSearchStore} from '../../../stores';
+import RoleDataView from './RoleDataView';
 
 export default React.createClass({
 	mixins: [ListenerMixin],
@@ -83,39 +84,29 @@ export default React.createClass({
 					       onDismiss={this.onDismissError}
 					>{lastError.message || 'Unknown error'}</Alert>
 				: '' }
-				<Table hover responsive>
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Description</th>
-						</tr>
-					</thead>
-					<tbody>
-					{ _.map(this.state.roles, (role, index) => {
-						return (
-							<tr key={index}>
-								<td>{role.name}</td>
-								<td>{role.description}</td>
-								<td>
-									<ButtonGroup fill>
-										<ButtonLink bsSize="small"
-										            to="role-edit"
-										            disabled={!canEditRole}
-										            params={{ id: role.id }}
-										            query={{ 'return_to': 'role-search' }}
-										>Edit</ButtonLink>
-										<Button bsSize="small"
-										        bsStyle="danger"
-										        disabled={!canRemoveRole}
-										        onClick={this.onRemoveRole.bind(this, role)}
-										>Remove</Button>
-									</ButtonGroup>
-								</td>
-							</tr>
-						);
-					}) }
-					</tbody>
-				</Table>
+				<RoleDataView key={this.state.roles}
+				              roles={this.state.roles}
+				              appendData={ (role) => {
+					return (
+						<ButtonGroup fill>
+							<ButtonLink bsSize="small"
+							            to="role-edit"
+							            disabled={!canEditRole}
+							            params={{ id: role.id }}
+							            query={{ 'return_to': 'role-search' }}
+							>Edit</ButtonLink>
+							<Button bsSize="small"
+							        bsStyle="danger"
+							        disabled={!canRemoveRole}
+							        onClick={this.onRemoveRole.bind(this, role)}
+							>Remove</Button>
+						</ButtonGroup>
+					);
+				}} />
+				<ButtonLink to="role-new"
+				            disabled={!canAddRole}
+				            query={{ return_to: 'role-search' }}
+				>Add new role</ButtonLink>
 				<Modal show={!!this.state.removeRole}
 				       onHide={this.onDoNotRemoveRole}
 				>
@@ -137,10 +128,6 @@ export default React.createClass({
 						>Do not remove</Button>
 					</Modal.Footer>
 				</Modal>
-				<ButtonLink to="role-new"
-				            disabled={!canAddRole}
-				            query={{ return_to: 'role-search' }}
-				>Add new role</ButtonLink>
 			</div>
 		);
 	},
