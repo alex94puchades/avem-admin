@@ -10,6 +10,7 @@ import {Alert, Button, ButtonGroup, Modal, Table} from 'react-bootstrap';
 import {SearchBox} from '../../common';
 import {UserActions} from '../../../actions';
 import {UserSearchStore} from '../../../stores';
+import UserDataView from './UserDataView';
 
 export default React.createClass({
 	mixins: [ListenerMixin],
@@ -83,42 +84,29 @@ export default React.createClass({
 					       onDismiss={this.onDismissError}
 					>{lastError.message || 'Unknown error'}</Alert>
 				: '' }
-				<Table hover responsive>
-					<thead>
-						<tr>
-							<th>Email</th>
-							<th>Role</th>
-						</tr>
-					</thead>
-					<tbody>
-					{ _.map(this.state.users, (user, index) => {
-						return (
-							<tr key={index}>
-								<td>{user.email}</td>
-								<td>
-									<Link to='role-edit'
-									      params={{ id: user.role.id }}
-									>{user.role.name}</Link>
-								</td>
-								<td>
-									<ButtonGroup fill>
-										<ButtonLink bsSize='small'
-											        to='user-edit'
-											        disabled={!canEditUser}
-											        params={{ id: user.id }}
-											        query={{ return_to: 'user-search' }}
-										>Edit</ButtonLink>
-										<Button bsSize="small"
-											    bsStyle="danger"
-											    disabled={!canRemoveUser}
-											    onClick={this.onRemoveUser.bind(this, user)}
-										>Remove</Button>
-									</ButtonGroup>
-								</td>
-							</tr>
-					); }) }
-					</tbody>
-				</Table>
+				<UserDataView key={this.state.users}
+				              users={this.state.users}
+				              appendData={ (user) => {
+					return (
+						<ButtonGroup fill>
+							<ButtonLink bsSize='small'
+							        to='user-edit'
+							        disabled={!canEditUser}
+							        params={{ id: user.id }}
+							        query={{ return_to: 'user-search' }}
+							>Edit</ButtonLink>
+							<Button bsSize="small"
+							        bsStyle="danger"
+							        disabled={!canRemoveUser}
+							        onClick={this.onRemoveUser.bind(this, user)}
+							>Remove</Button>
+						</ButtonGroup>
+					);
+				}} />
+				<ButtonLink to="user-new"
+				            disabled={!canAddUser}
+				            query={{ return_to: 'user-search' }}
+				>Add new user</ButtonLink>
 				<Modal show={!!this.state.removeUser}
 				       onHide={this.onDoNotRemoveUser}
 				>
@@ -140,10 +128,6 @@ export default React.createClass({
 						>Do not remove</Button>
 					</Modal.Footer>
 				</Modal>
-				<ButtonLink to="user-new"
-				            disabled={!canAddUser}
-				            query={{ return_to: 'user-search' }}
-				>Add new user</ButtonLink>
 			</div>
 		);
 	},
