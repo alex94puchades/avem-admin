@@ -10,6 +10,7 @@ import {Alert, Button, ButtonGroup, Modal, Table} from 'react-bootstrap';
 import {SearchBox} from '../../common';
 import {ClientActions} from '../../../actions';
 import {ClientSearchStore} from '../../../stores';
+import ClientDataView from './ClientDataView';
 
 export default React.createClass({
 	mixins: [ListenerMixin],
@@ -83,43 +84,29 @@ export default React.createClass({
 					       onDismiss={this.onDismissError}
 					>{lastError.message || 'Unknown error'}</Alert>
 				: '' }
-				<Table hover responsive>
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Trusted</th>
-							<th>Redirect URI</th>
-						</tr>
-					</thead>
-					<tbody>
-					{ _.map(this.state.clients, (client, index) => {
-						return (
-							<tr key={index}>
-								<td>{client.name}</td>
-								<td>
-									{client.trusted ? 'true' : 'false'}
-								</td>
-								<td>{client.redirectUri || 'n/a'}</td>
-								<td>
-									<ButtonGroup fill>
-										<ButtonLink bsSize="small"
-										            to="client-edit"
-										            disabled={!canEditClient}
-										            params={{ id: client.id }}
-										            query={{ return_to: 'client-search' }}
-										>Edit</ButtonLink>
-										<Button bsSize="small"
-										        bsStyle="danger"
-										        disabled={!canRemoveClient}
-										        onClick={this.onRemoveClient.bind(this, client)}
-										>Remove</Button>
-									</ButtonGroup>
-								</td>
-							</tr>
-						);
-					}) }
-					</tbody>
-				</Table>
+				<ClientDataView key={this.state.clients}
+				                clients={this.state.clients}
+				                appendData={ (client) => {
+					return (
+						<ButtonGroup fill>
+						<ButtonLink bsSize="small"
+						            to="client-edit"
+						            disabled={!canEditClient}
+						            params={{ id: client.id }}
+						            query={{ return_to: 'client-search' }}
+						>Edit</ButtonLink>
+						<Button bsSize="small"
+						        bsStyle="danger"
+						        disabled={!canRemoveClient}
+						        onClick={this.onRemoveClient.bind(this, client)}
+						>Remove</Button>
+						</ButtonGroup>
+					);
+				}}/>
+				<ButtonLink to="client-new"
+				            disabled={!canAddClient}
+				            query={{ return_to: 'client-search' }}
+				>Add new client</ButtonLink>
 				<Modal show={!!this.state.removeClient}
 				       onHide={this.onDoNotRemoveClient}
 				>
@@ -141,10 +128,6 @@ export default React.createClass({
 						>Do not remove</Button>
 					</Modal.Footer>
 				</Modal>
-				<ButtonLink to="client-new"
-				            disabled={!canAddClient}
-				            query={{ return_to: 'client-search' }}
-				>Add new client</ButtonLink>
 			</div>
 		);
 	},
