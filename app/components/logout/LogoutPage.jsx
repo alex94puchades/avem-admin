@@ -14,7 +14,7 @@ export default React.createClass({
 	
 	componentWillUpdate: function(nextProps, nextState) {
 		if (nextState.privileges != null)
-			LoginActions.logout();
+			AuthActions.logout();
 	},
 	
 	onLogoutCompleted: function() {
