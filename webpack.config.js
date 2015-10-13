@@ -14,7 +14,6 @@ module.exports = {
 	],
 	output: {
 		path: './dist',
-		publicPath: 'http://localhost:8081',
 		filename: '[name].[hash].js',
 	},
 	module: {
