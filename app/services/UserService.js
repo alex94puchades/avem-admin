@@ -2,6 +2,7 @@ import _ from 'lodash';
 import request from 'superagent';
 import jsonapify from 'superagent-jsonapify';
 
+import config from '../../config';
 import {CredentialStore} from '../stores';
 
 jsonapify(request);
@@ -9,7 +10,7 @@ jsonapify(request);
 class UserService {
 	createUser(userData) {
 		return new Promise((resolve, reject) => {
-			request.post('http://localhost:8080/users')
+			request.post(`${config.serverUrl}/users`)
 				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 				.type('application/vnd.api+json').send({ data: userData })
 				.end((err, res) => {
@@ -20,7 +21,7 @@ class UserService {
 	
 	readUser(userId) {
 		return new Promise((resolve, reject) => {
-			request.get(`http://localhost:8080/users/${userId}`)
+			request.get(`${config.serverUrl}/users/${userId}`)
 				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 				.type('application/vnd.api+json').end((err, res) => {
 					err ? reject(err) : resolve(res.body);
@@ -30,7 +31,7 @@ class UserService {
 	
 	updateUser(userId, data) {
 		return new Promise((resolve, reject) => {
-			request.put(`http://localhost:8080/users/${userId}`)
+			request.put(`${config.serverUrl}/users/${userId}`)
 				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 				.type('application/vnd.api+json').send({ data })
 				.end((err, res) => {
@@ -41,7 +42,7 @@ class UserService {
 	
 	removeUser(userId) {
 		return new Promise((resolve, reject) => {
-			request.del(`http://localhost:8080/users/${userId}`)
+			request.del(`${config.serverUrl}/users/${userId}`)
 				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 				.end((err, res) => {
 					err ? reject(err) : resolve(res.body);
@@ -55,7 +56,7 @@ class UserService {
 			let filter = _.assign({
 				'page[offset]': offset, 'page[limit]': limit
 			}, _.mapKeys(query, (value, field) => `filter[${field}]`));
-			request.get('http://localhost:8080/users').query(filter)
+			request.get(`${config.serverUrl}/users`).query(filter)
 				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 				.end((err, res) => {
 					err ? reject(err) : resolve(res.body.data);

@@ -1,6 +1,7 @@
 import request from 'superagent';
 import jsonapify from 'superagent-jsonapify';
 
+import config from '../../config';
 import {CredentialStore} from '../stores';
 
 jsonapify(request);
@@ -8,11 +9,11 @@ jsonapify(request);
 class AuthService {
 	login(username, password) {
 		return new Promise((resolve, reject) => {
-			request.post('http://localhost:8080/oauth2/token')
+			request.post(`${config.serverUrl}/oauth2/token`)
 				.type('form').send({
 					username, password,
 					grant_type: 'password',
-					client_id: 'es.avem.WebAdmin',
+					client_id: config.clientName,
 				}).end((err, res) => {
 					err ? reject(err) : resolve(res.body);
 				});
@@ -21,14 +22,14 @@ class AuthService {
 
 	getOwnPrivileges() {
 		return new Promise((resolve, reject) => {
-			request.get('http://localhost:8080')
+			request.get(`${config.serverUrl}`)
 				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 				.end((err, res) => {
 					if (err) return reject(err);
 					let userPath = res.body.links['this-user'];
 					if (!userPath) return reject(new Error('Invalid server response'));
 					let params = { fields: 'role', 'fields[roles]': 'privileges' };
-					request.get(`http://localhost:8080${userPath}`)
+					request.get(`${config.serverUrl}${userPath}`)
 						.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 						.query(params).end((err, res) => {
 							if (err) return reject(err);
@@ -41,13 +42,13 @@ class AuthService {
 
 	logout() {
 		return new Promise((resolve, reject) => {
-			request.get('http://localhost:8080')
+			request.get(`${config.serverUrl}`)
 				.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 				.end((err, res) => {
 					if (err) return reject(err);
 					let sessionPath = res.body.links['this-session'];
 					if (!sessionPath) return reject(new Error('Invalid server response'));
-					request.del(`http://localhost:8080${sessionPath}`)
+					request.del(`http://api.avem.es:8080${sessionPath}`)
 						.set('Authorization', `Bearer ${CredentialStore.accessToken}`)
 						.end((err, res) => {
 							err ? reject(err) : resolve(res.body);
