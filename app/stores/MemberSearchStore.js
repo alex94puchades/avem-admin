@@ -20,10 +20,10 @@ export default Reflux.createStore({
 	},
 	
 	onCreateMemberCompleted: function(response) {
-		MemberActions.searchMember(this.params, this.members.length);
+		MemberActions.searchMembers(this.params, this.members.length);
 	},
 	
 	onRemoveMemberCompleted: function(response) {
-		MemberActions.searchMember(this.params, this.members.length);
+		MemberActions.searchMembers(this.params, this.members.length);
 	},
 });

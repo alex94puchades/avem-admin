@@ -34,9 +34,9 @@ export default React.createClass({
 					</tr>
 				</thead>
 				<tbody>
-				{ _.map(this.props.roles, (role, index) => {
+				{ _.map(this.props.roles, role => {
 					return (
-						<tr key={index}>
+						<tr key={role.id}>
 							{ prependData ? <td>{prependData(role)}</td> : '' }
 								<td>{role.name}</td>
 								<td>{role.description}</td>

@@ -90,10 +90,12 @@ export default React.createClass({
 					return (
 						<ButtonGroup fill>
 							<ButtonLink bsSize='small'
-							        to='user-edit'
-							        disabled={!canEditUser}
-							        params={{ id: user.id }}
-							        query={{ return_to: 'user-search' }}
+							            to='user-edit'
+							            disabled={!canEditUser}
+							            params={{ id: user.id }}
+							            query={{
+							            	return_to: 'user-search'
+							            }}
 							>Edit</ButtonLink>
 							<Button bsSize="small"
 							        bsStyle="danger"

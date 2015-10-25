@@ -74,10 +74,13 @@ export default React.createClass({
 		let canRemoveClient = _.includes(this.props.privileges, 'client:remove');
 		return (
 			<div>
-				<SearchBox ops={{ name: { multi: false, merge: 'append' },
-				                  trusted: { multi: false, merge: 'replace' } }}
-				           default="name" onSearch={this.onSearchClients}
+				<SearchBox default="name"
+				           onSearch={this.onSearchClients}
 				           placeholder='Client search, ie: "client.name.*"'
+				           ops={{
+				           	name: { multi: false, merge: 'append' },
+				           	trusted: { multi: false, merge: 'replace' },
+				           }}
 				/>
 				{ this.state.error ?
 					<Alert bsStyle="warning"

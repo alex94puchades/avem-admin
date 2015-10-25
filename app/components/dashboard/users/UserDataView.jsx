@@ -35,9 +35,9 @@ export default React.createClass({
 					</tr>
 				</thead>
 				<tbody>
-				{ _.map(this.props.users, (user, index) => {
+				{ _.map(this.props.users, user => {
 					return (
-						<tr key={index}>
+						<tr key={user.id}>
 							{ prependData ? <td>{prependData(user)}</td> : '' }
 								<td>{user.email}</td>
 								<td>

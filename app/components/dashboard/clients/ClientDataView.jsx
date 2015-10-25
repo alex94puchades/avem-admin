@@ -37,9 +37,9 @@ export default React.createClass({
 					</tr>
 				</thead>
 				<tbody>
-				{ _.map(this.props.clients, (client, index) => {
+				{ _.map(this.props.clients, client => {
 					return (
-						<tr key={index}>
+						<tr key={client.id}>
 							{ prependData ? <td>{prependData(client)}</td> : '' }
 								<td>{client.name}</td>
 								<td>

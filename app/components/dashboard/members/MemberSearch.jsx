@@ -18,7 +18,6 @@ export default React.createClass({
 	getInitialState: function() {
 		return {
 			error: null,
-			members: [],
 			removeMember: false,
 		};
 	},
@@ -68,26 +67,28 @@ export default React.createClass({
 	},
 
 	render: function() {
-		let lastError = this.state.error;
 		let canAddMember = _.includes(this.props.privileges, 'member:add');
 		let canEditMember = _.includes(this.props.privileges, 'member:edit');
 		let canRemoveMember = _.includes(this.props.privileges, 'member:remove');
 		return (
 			<div>
-				<SearchBox ops={{ firstName: { multi: false, merge: 'replace' },
-				                  lastName: { multi: false, merge: 'replace' },
-				                  fullName: { multi: false, merge: 'append' } }}
-				           default="fullName" onSearch={this.onSearchMembers}
+				<SearchBox ops={{
+				               firstName: { multi: false, merge: 'replace' },
+				               lastName: { multi: false, merge: 'replace' },
+				               fullName: { multi: false, merge: 'append' },
+				           }}
+				           default="fullName"
+				           onSearch={this.onSearchMembers}
 				           placeholder='Member search, ie: "Some Member"'
 				/>
 				{ this.state.error ?
 					<Alert bsStyle="warning"
 					       onDismiss={this.onDismissError}
-					>{lastError.message || 'Unknown error'}</Alert>
+					>{ this.state.error.message || 'Unknown error' }</Alert>
 				: '' }
 				<MemberDataView key={this.state.members}
 				                members={this.state.members}
-				                appendData={ (member) => {
+				                appendData={ member => {
 					return (
 						<ButtonGroup fill>
 							<ButtonLink bsSize='small'

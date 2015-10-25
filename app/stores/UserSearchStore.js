@@ -6,8 +6,8 @@ export default Reflux.createStore({
 	listenables: UserActions,
 	
 	init: function() {
-		this.params = {};
 		this.users = [];
+		this.params = {};
 	},
 	
 	onSearchUsers: function(params) {

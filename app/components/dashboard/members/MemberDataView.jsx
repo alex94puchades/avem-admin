@@ -43,9 +43,13 @@ export default React.createClass({
 								<td>{member['full-name']}</td>
 								<td>{member.gender}</td>
 								<td>
-									<Link to="user-edit"
-										  params={{ id: member.user.id }}
-									>{member.user.email}</Link>
+									{ () => {
+										return member.user ?
+											<Link to="user-edit"
+											      params={{ id: member.user.id }}
+											>{member.user.email}</Link>
+										: 'n/a'
+									}() }
 								</td>
 							{ appendData ? <td>{appendData(member)}</td> : '' }
 						</tr>

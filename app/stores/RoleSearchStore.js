@@ -6,8 +6,8 @@ export default Reflux.createStore({
 	listenables: RoleActions,
 	
 	init: function() {
-		this.params = {};
 		this.roles = [];
+		this.params = {};
 	},
 	
 	onSearchRoles: function(params) {

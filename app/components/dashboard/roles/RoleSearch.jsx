@@ -86,7 +86,7 @@ export default React.createClass({
 				: '' }
 				<RoleDataView key={this.state.roles}
 				              roles={this.state.roles}
-				              appendData={ (role) => {
+				              appendData={ role => {
 					return (
 						<ButtonGroup fill>
 							<ButtonLink bsSize="small"
