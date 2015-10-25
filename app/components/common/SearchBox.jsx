@@ -14,8 +14,11 @@ export default React.createClass({
 		})).isRequired,
 		default: (props, propName, componentName) => {
 			let defaultOp = props[propName];
-			return _.isString(defaultOp) &&
-			       props.ops[defaultOp] !== undefined;
+			if (!_.isString(defaultOp))
+				return new TypeError('default prop should be String');
+			if (!props.ops[defaultOp])
+				return new Error('default prop should have be an ops entry');
+			return null;
 		},
 	},
 	

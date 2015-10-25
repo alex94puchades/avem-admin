@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import Router, {
 	Route,
@@ -27,26 +28,24 @@ import {
 } from './components';
 
 const routes = (
-	<Route name="root" path="/" handler={App}>
-		<Route name="login" handler={LoginPage}/>
-		<Route name="logout" handler={LogoutPage}/>
-		<Route name="dashboard" path="/" handler={Dashboard}>
-			<Route name="user-search" path="/users" handler={UserSearch}/>
-			<Route name="user-new" path="/users/new" handler={UserNew}/>
-			<Route name="user-edit" path="/users/:id" handler={UserEdit}/>
-			<Route name="role-search" path="/roles" handler={RoleSearch}/>
-			<Route name="role-new" path="/roles/new" handler={RoleNew}/>
-			<Route name="role-edit" path="/roles/:id" handler={RoleEdit}/>
-			<Route name="client-search" path="/clients" handler={ClientSearch}/>
-			<Route name="client-new" path="/clients/new" handler={ClientNew}/>
-			<Route name="client-edit" path="/clients/:id" handler={ClientEdit}/>
-			<Route name="member-search" path="/members" handler={MemberSearch}/>
-			<Route name="member-new" path="/members/new" handler={MemberNew}/>
-			<Route name="member-edit" path="/members/:id" handler={MemberEdit}/>
+	<Route name="root" path="/" component={App}>
+		<Route name="login" component={LoginPage}/>
+		<Route name="logout" component={LogoutPage}/>
+		<Route name="dashboard" path="/" component={Dashboard}>
+			<Route path="/users" component={UserSearch}/>
+			<Route path="/users/new" component={UserNew}/>
+			<Route path="/users/:id" component={UserEdit}/>
+			<Route path="/roles" component={RoleSearch}/>
+			<Route path="/roles/new" component={RoleNew}/>
+			<Route path="/roles/:id" component={RoleEdit}/>
+			<Route path="/clients" component={ClientSearch}/>
+			<Route path="/clients/new" component={ClientNew}/>
+			<Route path="/clients/:id" component={ClientEdit}/>
+			<Route path="/members" component={MemberSearch}/>
+			<Route path="/members/new" component={MemberNew}/>
+			<Route path="/members/:id" component={MemberEdit}/>
 		</Route>
 	</Route>
 );
 
-Router.run(routes, Router.HashLocation, Root => {
-	React.render(<Root/>, document.body);
-});
+ReactDOM.render(<Router>{routes}</Router>, document.body);

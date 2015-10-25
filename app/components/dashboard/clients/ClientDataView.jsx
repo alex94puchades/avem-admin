@@ -29,24 +29,24 @@ export default React.createClass({
 			<Table hover responsive>
 				<thead>
 					<tr>
-						{ prependData ? <th>{this.props.preHeader}</th> : '' }
+						{ prependData ? <th>{this.props.preHeader}</th> : null }
 							<th>Name</th>
 							<th>Trusted</th>
 							<th>Redirect URI</th>
-						{ appendData ? <th>{this.props.postHeader}</th> : '' }
+						{ appendData ? <th>{this.props.postHeader}</th> : null }
 					</tr>
 				</thead>
 				<tbody>
 				{ _.map(this.props.clients, client => {
 					return (
 						<tr key={client.id}>
-							{ prependData ? <td>{prependData(client)}</td> : '' }
+							{ prependData ? <td>{prependData(client)}</td> : null }
 								<td>{client.name}</td>
 								<td>
 									{client.trusted ? 'true' : 'false'}
 								</td>
 								<td>{client.redirectUri || 'n/a'}</td>
-							{ appendData ? <td>{appendData(client)}</td> : '' }
+							{ appendData ? <td>{appendData(client)}</td> : null }
 						</tr>
 					);
 				}) }

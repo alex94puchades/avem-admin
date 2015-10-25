@@ -27,20 +27,20 @@ export default React.createClass({
 			<Table hover responsive>
 				<thead>
 					<tr>
-						{ prependData ? <th>{this.props.preHeader}</th> : '' }
+						{ prependData ? <th>{this.props.preHeader}</th> : null }
 							<th>Name</th>
 							<th>Description</th>
-						{ appendData ? <th>{this.props.postHeader}</th> : '' }
+						{ appendData ? <th>{this.props.postHeader}</th> : null }
 					</tr>
 				</thead>
 				<tbody>
 				{ _.map(this.props.roles, role => {
 					return (
 						<tr key={role.id}>
-							{ prependData ? <td>{prependData(role)}</td> : '' }
+							{ prependData ? <td>{prependData(role)}</td> : null }
 								<td>{role.name}</td>
 								<td>{role.description}</td>
-							{ appendData ? <td>{appendData(role)}</td> : '' }
+							{ appendData ? <td>{appendData(role)}</td> : null }
 						</tr>
 					);
 				}) }

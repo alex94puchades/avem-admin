@@ -4,7 +4,7 @@ import _ from 'lodash';
 import React from 'react';
 import {Link} from 'react-router';
 import {ListenerMixin} from 'reflux';
-import {ButtonLink} from 'react-router-bootstrap';
+import {LinkContainer} from 'react-router-bootstrap';
 import {Alert, Button, ButtonGroup, Modal, Table} from 'react-bootstrap';
 
 import {SearchBox} from '../../common';
@@ -86,17 +86,16 @@ export default React.createClass({
 				: '' }
 				<UserDataView key={this.state.users}
 				              users={this.state.users}
-				              appendData={ (user) => {
+				              appendData={ user => {
 					return (
 						<ButtonGroup fill>
-							<ButtonLink bsSize='small'
-							            to='user-edit'
-							            disabled={!canEditUser}
-							            params={{ id: user.id }}
-							            query={{
-							            	return_to: 'user-search'
-							            }}
-							>Edit</ButtonLink>
+							<LinkContainer to={`/users/${user.id}`}
+							               query={{ return_to: '/users' }}
+							>
+								<Button bsSize='small'
+								        disabled={!canEditUser}
+								>Edit</Button>
+							</LinkContainer>
 							<Button bsSize="small"
 							        bsStyle="danger"
 							        disabled={!canRemoveUser}
@@ -105,10 +104,11 @@ export default React.createClass({
 						</ButtonGroup>
 					);
 				}} />
-				<ButtonLink to="user-new"
-				            disabled={!canAddUser}
-				            query={{ return_to: 'user-search' }}
-				>Add new user</ButtonLink>
+				<LinkContainer to='/users/new'
+				               query={{ return_to: '/users' }}
+				>
+					<Button disabled={!canAddUser}>Add new user</Button>
+				</LinkContainer>
 				<Modal show={!!this.state.removeUser}
 				       onHide={this.onDoNotRemoveUser}
 				>

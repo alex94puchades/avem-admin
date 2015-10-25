@@ -4,7 +4,7 @@ import _ from 'lodash';
 import React from 'react';
 import {Link} from 'react-router';
 import {ListenerMixin} from 'reflux';
-import {ButtonLink} from 'react-router-bootstrap';
+import {LinkContainer} from 'react-router-bootstrap';
 import {Alert, Button, ButtonGroup, Modal, Table} from 'react-bootstrap';
 
 import {SearchBox} from '../../common';
@@ -91,12 +91,13 @@ export default React.createClass({
 				                appendData={ member => {
 					return (
 						<ButtonGroup fill>
-							<ButtonLink bsSize='small'
-							            to='member-edit'
-							            disabled={!canEditMember}
-							            params={{ id: member.id }}
-							            query={{ return_to: 'member-search' }}
-							>Edit</ButtonLink>
+							<LinkContainer to={`/members/${member.id}`}
+							               query={{ return_to: '/members' }}
+							>
+								<Button bsSize="small"
+								        disabled={!canEditMember}
+								>Edit</Button>
+							</LinkContainer>
 							<Button bsSize="small"
 							        bsStyle="danger"
 							        disabled={!canRemoveMember}
@@ -105,10 +106,11 @@ export default React.createClass({
 						</ButtonGroup>
 					);
 				}} />
-				<ButtonLink to="member-new"
-				            disabled={!canAddMember}
-				            query={{ return_to: 'member-search' }}
-				>Add new member</ButtonLink>
+				<LinkContainer to="/members/new"
+				               query={{ return_to: '/members' }}
+				>
+					<Button disabled={!canAddMember}>Add new member</Button>
+				</LinkContainer>
 				<Modal show={!!this.state.removeMember}
 				       onHide={this.onDoNotRemoveMember}
 				>

@@ -4,9 +4,9 @@ import React from 'react';
 import {Alert, Input} from 'react-bootstrap';
 import {Navigation, State} from 'react-router';
 
-import {MemberActions} from '../../../actions';
-import {MemberService} from '../../../services';
 import MemberDataFields from './MemberDataFields';
+import {MemberActions} from '../../../actions';
+import {MemberService, UserService} from '../../../services';
 
 export default React.createClass({
 	mixins: [Navigation, State],
@@ -14,14 +14,18 @@ export default React.createClass({
 	getInitialState: function() {
 		return {
 			error: null,
+			users: null,
 			memberData: null,
 		};
 	},
 	
 	componentDidMount: function() {
 		let memberId = this.props.params.id;
-		MemberActions.updateUser.failed.listen(this.onUpdateMemberFailed);
-		MemberActions.updateUser.completed.listen(this.onUpdateMemberCompleted);
+		MemberActions.updateMember.failed.listen(this.onUpdateMemberFailed);
+		MemberActions.updateMember.completed.listen(this.onUpdateMemberCompleted);
+		UserService.searchUsers({ email: '*' }).then(users => {
+			this.setState({ users });
+		});
 		MemberService.readMember(memberId).then(response => {
 			this.setState({ memberData: response.data });
 		});
@@ -59,7 +63,9 @@ export default React.createClass({
 					>{ this.state.error.message || 'Unknown error' }</Alert>
 				: '' }
 				<form onSubmit={this.onSubmitMemberData}>
-					<MemberDataFields key={this.state.memberData}
+					<MemberDataFields users={this.state.users}
+					                  key={ this.state.users &&
+					                        this.state.memberData }
 					                  privileges={this.props.privileges}
 					                  memberData={this.state.memberData}
 					                  onChange={this.onMemberDataChanged}

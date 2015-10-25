@@ -2,9 +2,8 @@ import 'bootstrap/less/bootstrap.less';
 
 import _ from 'lodash';
 import React from 'react';
-import {RouteHandler} from 'react-router';
-import {NavItemLink} from 'react-router-bootstrap';
-import {Nav, Grid, Row, Col, PageHeader} from 'react-bootstrap';
+import {LinkContainer} from 'react-router-bootstrap';
+import {Nav, NavItem, Grid, Row, Col, PageHeader} from 'react-bootstrap';
 
 import {Authenticated} from '../../mixins';
 
@@ -12,7 +11,7 @@ export default React.createClass({
 	mixins: [Authenticated],
 	
 	onLogout: function() {
-		this.transitionTo('logout');
+		this.history.pushState(null, '/logout');
 	},
 	
 	render: function() {
@@ -26,16 +25,25 @@ export default React.createClass({
 				<Row>
 					<Col md={3}>
 						<Nav bsStyle="pills" stacked>
-							<NavItemLink to='user-search'>Users</NavItemLink>
-							<NavItemLink to='role-search'>Roles</NavItemLink>
-							<NavItemLink to='client-search'>Clients</NavItemLink>
-							<NavItemLink to='member-search'>Members</NavItemLink>
+							<LinkContainer to='/users'>
+								<NavItem>Users</NavItem>
+							</LinkContainer>
+							<LinkContainer to='/roles'>
+								<NavItem>Roles</NavItem>
+							</LinkContainer>
+							<LinkContainer to='/clients'>
+								<NavItem>Clients</NavItem>
+							</LinkContainer>
+							<LinkContainer to='/members'>
+								<NavItem>Members</NavItem>
+							</LinkContainer>
 						</Nav>
 					</Col>
 					<Col md={9}>
-						<RouteHandler key={this.state.privileges}
-						              privileges={this.state.privileges}
-						/>
+						{ React.cloneElement(this.props.children, {
+							key: this.state.privileges,
+							privileges: this.state.privileges,
+						}) }
 					</Col>
 				</Row>
 			</Grid>

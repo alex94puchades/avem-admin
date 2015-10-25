@@ -28,30 +28,29 @@ export default React.createClass({
 			<Table hover responsive>
 				<thead>
 					<tr>
-						{ prependData ? <th>{this.props.preHeader}</th> : '' }
-							<th>Name</th>
+						{ prependData ? <th>{this.props.preHeader}</th> : null }
+							<th>Full name</th>
 							<th>Gender</th>
 							<th>User</th>
-						{ appendData ? <th>{this.props.postHeader}</th> : '' }
+						{ appendData ? <th>{this.props.postHeader}</th> : null }
 					</tr>
 				</thead>
 				<tbody>
 				{ _.map(this.props.members, (member, index) => {
 					return (
 						<tr key={index}>
-							{ prependData ? <td>{prependData(member)}</td> : '' }
-								<td>{member['full-name']}</td>
-								<td>{member.gender}</td>
+							{ prependData ? <td>{prependData(member)}</td> : null }
+								<td>{member.fullName}</td>
+								<td>{member.gender || 'n/a'}</td>
 								<td>
 									{ () => {
 										return member.user ?
-											<Link to="user-edit"
-											      params={{ id: member.user.id }}
+											<Link to={`/users/${member.user.id}`}
 											>{member.user.email}</Link>
 										: 'n/a'
 									}() }
 								</td>
-							{ appendData ? <td>{appendData(member)}</td> : '' }
+							{ appendData ? <td>{appendData(member)}</td> : null }
 						</tr>
 				); }) }
 				</tbody>

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import React from 'react';
 import {Link} from 'react-router';
 import {ListenerMixin} from 'reflux';
-import {ButtonLink} from 'react-router-bootstrap';
+import {LinkContainer} from 'react-router-bootstrap';
 import {Alert, Button, ButtonGroup, Modal, Table} from 'react-bootstrap';
 
 import {SearchBox} from '../../common';
@@ -92,24 +92,26 @@ export default React.createClass({
 				                appendData={ (client) => {
 					return (
 						<ButtonGroup fill>
-						<ButtonLink bsSize="small"
-						            to="client-edit"
-						            disabled={!canEditClient}
-						            params={{ id: client.id }}
-						            query={{ return_to: 'client-search' }}
-						>Edit</ButtonLink>
-						<Button bsSize="small"
-						        bsStyle="danger"
-						        disabled={!canRemoveClient}
-						        onClick={this.onRemoveClient.bind(this, client)}
-						>Remove</Button>
+							<LinkContainer to={`/clients/${client.id}`}
+							               query={{ return_to: '/clients' }}
+							>
+								<Button bsSize="small"
+								        disabled={!canEditClient}
+								>Edit</Button>
+							</LinkContainer>
+							<Button bsSize="small"
+							        bsStyle="danger"
+							        disabled={!canRemoveClient}
+							        onClick={this.onRemoveClient.bind(this, client)}
+							>Remove</Button>
 						</ButtonGroup>
 					);
 				}}/>
-				<ButtonLink to="client-new"
-				            disabled={!canAddClient}
-				            query={{ return_to: 'client-search' }}
-				>Add new client</ButtonLink>
+				<LinkContainer to="/clients/new"
+				               query={{ return_to: '/clients' }}
+				>
+					<Button disabled={!canAddClient}>Add new client</Button>
+				</LinkContainer>
 				<Modal show={!!this.state.removeClient}
 				       onHide={this.onDoNotRemoveClient}
 				>

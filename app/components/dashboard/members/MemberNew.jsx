@@ -4,6 +4,7 @@ import React from 'react';
 import {Alert, ButtonInput} from 'react-bootstrap';
 import {Navigation, State} from 'react-router';
 
+import {UserService} from '../../../services';
 import {MemberActions} from '../../../actions';
 import MemberDataFields from './MemberDataFields';
 
@@ -13,6 +14,7 @@ export default React.createClass({
 	getInitialState: function() {
 		return {
 			error: null,
+			users: null,
 			memberData: {},
 		};
 	},
@@ -20,6 +22,9 @@ export default React.createClass({
 	componentDidMount: function() {
 		MemberActions.createMember.failed.listen(this.onCreateMemberFailed);
 		MemberActions.createMember.completed.listen(this.onCreateMemberCompleted);
+		UserService.searchUsers({ email: '*' }).then(users => {
+			this.setState({ users });
+		});
 	},
 	
 	onMemberDataChanged: function(memberData) {
@@ -53,7 +58,9 @@ export default React.createClass({
 					>{ this.state.error.message || 'Unknown error' }</Alert>
 				: '' }
 				<form onSubmit={this.onSubmitMemberData}>
-					<MemberDataFields key={this.state.memberData}
+					<MemberDataFields users={this.state.users}
+					                  key={ this.state.users &&
+					                        this.state.memberData }
 					                  privileges={this.props.privileges}
 					                  memberData={this.state.memberData}
 					                  onChange={this.onMemberDataChanged}

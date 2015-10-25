@@ -4,7 +4,7 @@ import _ from 'lodash';
 import React from 'react';
 import {Link} from 'react-router';
 import {ListenerMixin} from 'reflux';
-import {ButtonLink} from 'react-router-bootstrap';
+import {LinkContainer} from 'react-router-bootstrap';
 import {Alert, Button, ButtonGroup, Modal, Table} from 'react-bootstrap';
 
 import {SearchBox} from '../../common';
@@ -89,12 +89,13 @@ export default React.createClass({
 				              appendData={ role => {
 					return (
 						<ButtonGroup fill>
-							<ButtonLink bsSize="small"
-							            to="role-edit"
-							            disabled={!canEditRole}
-							            params={{ id: role.id }}
-							            query={{ 'return_to': 'role-search' }}
-							>Edit</ButtonLink>
+							<LinkContainer to={`/roles/${role.id}`}
+							               query={{ return_to: '/roles' }}
+							>
+								<Button bsSize="small"
+								        disabled={!canEditRole}
+								>Edit</Button>
+							</LinkContainer>
 							<Button bsSize="small"
 							        bsStyle="danger"
 							        disabled={!canRemoveRole}
@@ -103,10 +104,11 @@ export default React.createClass({
 						</ButtonGroup>
 					);
 				}} />
-				<ButtonLink to="role-new"
-				            disabled={!canAddRole}
-				            query={{ return_to: 'role-search' }}
-				>Add new role</ButtonLink>
+				<LinkContainer to="/roles/new"
+				               query={{ return_to: '/roles' }}
+				>
+					<Button disabled={!canAddRole}>Add new role</Button>
+				</LinkContainer>
 				<Modal show={!!this.state.removeRole}
 				       onHide={this.onDoNotRemoveRole}
 				>

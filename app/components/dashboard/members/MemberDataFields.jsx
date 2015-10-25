@@ -1,26 +1,28 @@
 import 'bootstrap/less/bootstrap.less';
 
 import React from 'react';
-import {Input, ButtonInput} from 'react-bootstrap';
+import {Input, Collapse} from 'react-bootstrap';
+
+import UserDataFields from '../users/UserDataFields';
 
 export default React.createClass({
 	propTypes: {
 		memberData: React.PropTypes.object,
 		onChange: React.PropTypes.func.isRequired,
-		memberUsers: React.PropTypes.arrayOf(React.PropTypes.object),
+		users: React.PropTypes.arrayOf(React.PropTypes.object),
 	},
 	
 	getDefaultProps: function() {
 		return {
+			users: [],
 			memberData: {
 				user: null,
-				gender: '',
-				lastName: '',
 				firstName: '',
+				lastName: '',
+				gender: null,
 				birthday: null,
 				renewDate: null,
 			},
-			memberUsers: [],
 		};
 	},
 	
@@ -31,7 +33,7 @@ export default React.createClass({
 			data: {
 				type: 'members',
 				attributes: {
-					user, gender, birthday,
+					gender, birthday,
 					'last-name': lastName,
 					'first-name': firstName,
 					'renew-date': renewDate,
@@ -40,8 +42,17 @@ export default React.createClass({
 					user,
 				},
 			},
-			setUserMethod: user ? 'select' : 'none',
 		};
+	},
+	
+	onUserChanged: function(event) {
+		let newUser = event.target.value;
+		let data = _.clone(this.state.data);
+		_.set(data, 'relationships.user', newUser ? {
+			type: 'users', id: newUser
+		} : null);
+		this.setState({ data });
+		this.props.onChange(data);
 	},
 	
 	onFirstNameChanged: function(event) {
@@ -84,29 +95,27 @@ export default React.createClass({
 		this.props.onChange(data);
 	},
 	
-	onSetUserMethodChanged: function(event) {
-		this.setState({ setUserMethod: event.target.value });
-	},
-	
 	render: function() {
 		let memberData = this.state.data;
-		let canAddUser = _.includes(this.props.privileges, 'user:add');
 		let canEditMember = _.includes(this.props.privileges, 'member:edit');
 		let canRenewMember = _.includes(this.props.privileges, 'member:renew');
 		return (
 			<div>
 				<Input required
-				       type="select"
 				       label="User"
+				       type="select"
 				       readOnly={!canEditMember}
-				       value={this.state.setUserMethod}
-				       onChange={this.onSetUserMethodChanged}
+				       onChange={this.onUserChanged}
+				       value={_.get(memberData.relationships.user, 'id')}
 				>
-					<option value="none">Do not associate user</option>
-					<option value="select">Select existing user</option>
-					{ canAddUser ?
-						<option value="create">Create new user</option>
-					: '' }
+					<option value={null}>n/a</option>
+					{ _.map(this.props.users, user => {
+						return (
+							<option key={user.id}
+							        value={user.id}
+							>{user.email}</option>
+						);
+					}) }
 				</Input>
 				<Input required
 				       type="text"
@@ -122,7 +131,8 @@ export default React.createClass({
 				       onChange={this.onLastNameChanged}
 				       value={memberData.attributes['last-name']}
 				/>
-				<Input type="date"
+				<Input disabled
+				       type="date"
 				       label="Birthday"
 				       readOnly={!canEditMember}
 				       onChange={this.onBirthdayChanged}
@@ -134,6 +144,7 @@ export default React.createClass({
 				       onChange={this.onGenderChanged}
 				       value={memberData.attributes.gender}
 				>
+					<option value={null}>n/a</option>
 					<option value="male">Male</option>
 					<option value="female">Female</option>
 					<option value="other">Other</option>
