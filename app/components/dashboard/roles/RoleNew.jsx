@@ -1,7 +1,10 @@
+import 'bootstrap/less/bootstrap.less';
+
 import React from 'react';
 import {Navigation, State} from 'react-router';
+import {Alert, ButtonInput} from 'react-bootstrap';
 
-import RoleDataForm from './RoleDataForm';
+import RoleDataFields from './RoleDataFields';
 import {RoleActions} from '../../../actions';
 
 export default React.createClass({
@@ -10,6 +13,7 @@ export default React.createClass({
 	getInitialState: function() {
 		return {
 			error: null,
+			roleData: {},
 		};
 	},
 	
@@ -18,8 +22,12 @@ export default React.createClass({
 		RoleActions.createRole.completed.listen(this.onCreateRoleCompleted);
 	},
 	
-	onSubmitData: function(data) {
-		RoleActions.createRole(data);
+	onRoleDataChanged: function(roleData) {
+		this.setState({ roleData });
+	},
+	
+	onSubmitRoleData: function() {
+		RoleActions.createRole(this.state.roleData);
 	},
 	
 	onCreateRoleCompleted: function() {
@@ -38,12 +46,22 @@ export default React.createClass({
 				{ this.state.error ?
 					<Alert bsStyle="warning"
 						   onDismiss={this.onDismissError}
-					>{lastError.message || 'Unknown error'}</Alert>
+					>{ this.state.error.message || 'Unknown error' }</Alert>
 				: '' }
-				<RoleDataForm showResetButton={true}
-					          onSubmitData={this.onSubmitData}
-					          privileges={this.props.privileges}
-				/>
+				<form onSubmit={this.onSubmitRoleData}>
+					<RoleDataFields key={this.state.roleData}
+					                roleData={this.state.roleData}
+					                onChange={this.onRoleDataChanged}
+					                privileges={this.props.privileges}
+					/>
+					<ButtonInput type="submit"
+					             bsStyle="primary"
+					             value="Create role"
+					/>
+					<ButtonInput type="reset"
+					             value="Reset fields"
+					/>
+				</form>
 			</div>
 		);
 	},

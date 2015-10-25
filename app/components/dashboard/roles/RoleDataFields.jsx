@@ -2,15 +2,12 @@ import 'bootstrap/less/bootstrap.less';
 
 import _ from 'lodash';
 import React from 'react';
-import {ButtonInput, Input} from 'react-bootstrap';
+import {Input} from 'react-bootstrap';
 
 export default React.createClass({
 	propTypes: {
-		disabled: React.PropTypes.bool,
 		roleData: React.PropTypes.object,
-		showResetButton: React.PropTypes.bool,
-		submitButtonText: React.PropTypes.string,
-		onSubmitData: React.PropTypes.func.isRequired,
+		onChange: React.PropTypes.func.isRequired,
 	},
 	
 	getDefaultProps: function() {
@@ -20,9 +17,6 @@ export default React.createClass({
 				description: '',
 				privileges: [],
 			},
-			disabled: false,
-			showResetButton: true,
-			submitButtonText: 'Save role',
 		};
 	},
 	
@@ -32,7 +26,9 @@ export default React.createClass({
 			data: {
 				type: 'roles',
 				attributes: {
-					name, description, privileges,
+					name,
+					description,
+					privileges: privileges || [],
 				},
 			},
 		};
@@ -43,6 +39,7 @@ export default React.createClass({
 		let data = _.clone(this.state.data);
 		_.set(data, 'attributes.name', name);
 		this.setState({ data });
+		this.props.onChange(data);
 	},
 	
 	onDescriptionChanged: function(event) {
@@ -50,42 +47,28 @@ export default React.createClass({
 		let data = _.clone(this.state.data);
 		_.set(data, 'attributes.description', description);
 		this.setState({ data });
-	},
-	
-	onSubmitForm: function(event) {
-		event.preventDefault();
-		this.props.onSubmitData(this.state.data);
+		this.props.onChange(data);
 	},
 	
 	render: function() {
+		let roleData = this.state.data;
 		let canEditRole = _.includes(this.props.privileges, 'role:edit');
 		return (
-			<form onSubmit={this.onSubmitForm}>
-				<Input type="text"
-				       required
+			<div>
+				<Input required
+				       type="text"
 				       label="Name"
 				       readOnly={!canEditRole}
 				       onChange={this.onNameChanged}
-				       value={this.state.data.attributes.name}
+				       value={roleData.attributes.name}
 				/>
 				<Input type="text"
 				       label="Description"
 				       readOnly={!canEditRole}
 				       onChange={this.onDescriptionChanged}
-				       value={this.state.data.attributes.description}
+				       value={roleData.attributes.description}
 				/>
-				{ canEditRole ? ([
-					<ButtonInput key={0}
-					             type="submit"
-					             bsStyle="primary"
-					             disabled={this.props.disabled}
-					             value={this.props.submitButtonText}
-					/>,
-					this.props.showResetButton
-						? <ButtonInput key={1} type="reset" value="Reset"/>
-						: ''
-				]) : '' }
-			</form>
+			</div>
 		);
 	},
 });
