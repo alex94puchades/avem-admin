@@ -13,7 +13,9 @@ export default React.createClass({
 	getInitialState: function() {
 		return {
 			error: null,
-			clientData: {},
+			clientData: {
+				trusted: false,
+			},
 		};
 	},
 	

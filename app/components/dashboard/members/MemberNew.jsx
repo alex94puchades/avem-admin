@@ -15,7 +15,10 @@ export default React.createClass({
 		return {
 			error: null,
 			users: null,
-			memberData: {},
+			memberData: {
+				user: null,
+				gender: null,
+			},
 		};
 	},
 	
