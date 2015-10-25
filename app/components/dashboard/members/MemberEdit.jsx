@@ -1,12 +1,12 @@
 import 'bootstrap/less/bootstrap.less';
 
 import React from 'react';
-import {Alert} from 'react-bootstrap';
+import {Alert, Input} from 'react-bootstrap';
 import {Navigation, State} from 'react-router';
 
-import MemberDataForm from './MemberDataForm';
 import {MemberActions} from '../../../actions';
 import {MemberService} from '../../../services';
+import MemberDataFields from './MemberDataFields';
 
 export default React.createClass({
 	mixins: [Navigation, State],
@@ -14,7 +14,7 @@ export default React.createClass({
 	getInitialState: function() {
 		return {
 			error: null,
-			member: null,
+			memberData: null,
 		};
 	},
 	
@@ -23,13 +23,17 @@ export default React.createClass({
 		MemberActions.updateUser.failed.listen(this.onUpdateMemberFailed);
 		MemberActions.updateUser.completed.listen(this.onUpdateMemberCompleted);
 		MemberService.readMember(memberId).then(response => {
-			this.setState({ member: response.data });
+			this.setState({ memberData: response.data });
 		});
 	},
 	
-	onSubmitData: function(memberData) {
+	onMemberDataChanged: function(memberData) {
+		this.setState({ memberData });
+	},
+	
+	onSubmitMemberData: function() {
 		let memberId = this.props.params.id;
-		MemberActions.updateMember(memberId, memberData);
+		MemberActions.updateMember(memberId, this.state.memberData);
 	},
 	
 	onUpdateMemberCompleted: function() {
@@ -47,21 +51,24 @@ export default React.createClass({
 	},
 	
 	render: function() {
-		let lastError = this.state.error;
 		return (
 			<div>
 				{ this.state.error ?
 					<Alert bsStyle="warning"
 					       onDismiss={this.onDismissError}
-					>{ lastError.message || 'Unknown error' }</Alert>
+					>{ this.state.error.message || 'Unknown error' }</Alert>
 				: '' }
-				<MemberDataForm key={this.state.member}
-					            showResetButton={false}
-					            memberData={this.state.member}
-					            onSubmitData={this.onSubmitData}
-					            privileges={this.props.privileges}
-					            disabled={this.state.member === null}
-				/>
+				<form onSubmit={this.onSubmitMemberData}>
+					<MemberDataFields key={this.state.memberData}
+					                  privileges={this.props.privileges}
+					                  memberData={this.state.memberData}
+					                  onChange={this.onMemberDataChanged}
+					/>
+					<Input type="submit"
+					       bsStyle="primary"
+					       value="Save member"
+					/>
+				</form>
 			</div>
 		);
 	},

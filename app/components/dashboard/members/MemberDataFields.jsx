@@ -1,13 +1,13 @@
+import 'bootstrap/less/bootstrap.less';
+
 import React from 'react';
 import {Input, ButtonInput} from 'react-bootstrap';
 
 export default React.createClass({
 	propTypes: {
-		disabled: React.PropTypes.bool,
 		memberData: React.PropTypes.object,
-		showResetButton: React.PropTypes.bool,
-		submitButtonText: React.PropTypes.string,
-		onSubmitData: React.PropTypes.func.isRequired,
+		onChange: React.PropTypes.func.isRequired,
+		memberUsers: React.PropTypes.arrayOf(React.PropTypes.object),
 	},
 	
 	getDefaultProps: function() {
@@ -20,19 +20,18 @@ export default React.createClass({
 				birthday: null,
 				renewDate: null,
 			},
-			disabled: false,
-			showResetButton: true,
-			submitButtonText: 'Save member',
+			memberUsers: [],
 		};
 	},
 	
 	getInitialState: function() {
-		let {user, firstName, lastName, gender, birthday, renewDate} = this.props.memberData || {};
+		let { user, firstName, lastName } = this.props.memberData || {};
+		let { gender, birthday, renewDate } = this.props.memberData || {};
 		return {
 			data: {
 				type: 'members',
 				attributes: {
-					gender, birthday,
+					user, gender, birthday,
 					'last-name': lastName,
 					'first-name': firstName,
 					'renew-date': renewDate,
@@ -41,6 +40,7 @@ export default React.createClass({
 					user,
 				},
 			},
+			setUserMethod: user ? 'select' : 'none',
 		};
 	},
 	
@@ -49,6 +49,7 @@ export default React.createClass({
 		let data = _.clone(this.state.data);
 		_.set(data, 'attributes.first-name', newFirstName);
 		this.setState({ data });
+		this.props.onChange(data);
 	},
 	
 	onLastNameChanged: function(event) {
@@ -56,6 +57,7 @@ export default React.createClass({
 		let data = _.clone(this.state.data);
 		_.set(data, 'attributes.last-name', newLastName);
 		this.setState({ data });
+		this.props.onChange(data);
 	},
 	
 	onBirthdayChanged: function(event) {
@@ -63,6 +65,7 @@ export default React.createClass({
 		let data = _.clone(this.state.data);
 		_.set(data, 'attributes.birthday', newBirthday);
 		this.setState({ data });
+		this.props.onChange(data);
 	},
 	
 	onGenderChanged: function(event) {
@@ -70,6 +73,7 @@ export default React.createClass({
 		let data = _.clone(this.state.data);
 		_.set(data, 'attributes.gender', newGender);
 		this.setState({ data });
+		this.props.onChange(data);
 	},
 	
 	onRenewDateChanged: function(event) {
@@ -77,64 +81,70 @@ export default React.createClass({
 		let data = _.clone(this.state.data);
 		_.set(data, 'attributes.renew-date', newRenewDate);
 		this.setState({ data });
+		this.props.onChange(data);
 	},
 	
-	onSubmitForm: function(event) {
-		event.preventDefault();
-		this.props.onSubmitData(this.state.data);
+	onSetUserMethodChanged: function(event) {
+		this.setState({ setUserMethod: event.target.value });
 	},
 	
 	render: function() {
+		let memberData = this.state.data;
+		let canAddUser = _.includes(this.props.privileges, 'user:add');
 		let canEditMember = _.includes(this.props.privileges, 'member:edit');
 		let canRenewMember = _.includes(this.props.privileges, 'member:renew');
 		return (
-			<form onSubmit={this.onSubmitForm}>
-				<Input type="text" required
+			<div>
+				<Input required
+				       type="select"
+				       label="User"
+				       readOnly={!canEditMember}
+				       value={this.state.setUserMethod}
+				       onChange={this.onSetUserMethodChanged}
+				>
+					<option value="none">Do not associate user</option>
+					<option value="select">Select existing user</option>
+					{ canAddUser ?
+						<option value="create">Create new user</option>
+					: '' }
+				</Input>
+				<Input required
+				       type="text"
 				       label="First name"
 				       readOnly={!canEditMember}
 				       onChange={this.onFirstNameChanged}
-				       value={this.state.data.attributes['first-name']}
+				       value={memberData.attributes['first-name']}
 				/>
-				<Input type="text" required
+				<Input required
+				       type="text"
 				       label="Last name"
 				       readOnly={!canEditMember}
 				       onChange={this.onLastNameChanged}
-				       value={this.state.data.attributes['last-name']}
+				       value={memberData.attributes['last-name']}
 				/>
 				<Input type="date"
 				       label="Birthday"
 				       readOnly={!canEditMember}
 				       onChange={this.onBirthdayChanged}
-				       value={this.state.data.attributes.birthday}
+				       value={memberData.attributes.birthday}
 				/>
 				<Input type="select"
 				       label="Gender"
 				       readOnly={!canEditMember}
 				       onChange={this.onGenderChanged}
-				       value={this.state.data.attributes.gender}
+				       value={memberData.attributes.gender}
 				>
 					<option value="male">Male</option>
 					<option value="female">Female</option>
 					<option value="other">Other</option>
 				</Input>
-				<Input type="date" required
+				<Input type="date"
 				       label="Renew date"
 				       onChange={this.onRenewDateChanged}
+				       value={memberData.attributes['renew-date']}
 				       readOnly={!canEditMember || !canRenewMember}
-				       value={this.state.data.attributes['renew-date']}
 				/>
-				{ canEditMember ? ([
-					<ButtonInput key={0}
-					             type="submit"
-					             bsStyle="primary"
-					             disabled={this.props.disabled}
-					             value={this.props.submitButtonText}
-					/>,
-					this.props.showResetButton
-						? <ButtonInput key={1} type="reset" value="Reset"/>
-						: ''
-				]) : '' }
-			</form>
+			</div>
 		);
 	},
 });

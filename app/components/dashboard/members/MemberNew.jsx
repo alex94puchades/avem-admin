@@ -1,9 +1,11 @@
+import 'bootstrap/less/bootstrap.less';
+
 import React from 'react';
-import {Alert} from 'react-bootstrap';
+import {Alert, ButtonInput} from 'react-bootstrap';
 import {Navigation, State} from 'react-router';
 
-import MemberDataForm from './MemberDataForm';
 import {MemberActions} from '../../../actions';
+import MemberDataFields from './MemberDataFields';
 
 export default React.createClass({
 	mixins: [Navigation, State],
@@ -11,16 +13,21 @@ export default React.createClass({
 	getInitialState: function() {
 		return {
 			error: null,
+			memberData: {},
 		};
 	},
 	
 	componentDidMount: function() {
-		MemberActions.createMember.completed.listen(this.onCreateMemberCompleted);
 		MemberActions.createMember.failed.listen(this.onCreateMemberFailed);
+		MemberActions.createMember.completed.listen(this.onCreateMemberCompleted);
 	},
 	
-	onSubmitData: function(memberData) {
-		MemberActions.createMember(memberData);
+	onMemberDataChanged: function(memberData) {
+		this.setState({ memberData });
+	},
+	
+	onSubmitMemberData: function() {
+		MemberActions.createMember(this.state.memberData);
 	},
 	
 	onCreateMemberCompleted: function() {
@@ -38,18 +45,27 @@ export default React.createClass({
 	},
 	
 	render: function() {
-		let lastError = this.state.error;
 		return (
 			<div>
 				{ this.state.error ?
 					<Alert bsStyle="warning"
 					       onDismiss={this.onDismissError}
-					>{lastError.message || 'Unknown error'}</Alert>
+					>{ this.state.error.message || 'Unknown error' }</Alert>
 				: '' }
-				<MemberDataForm showResetButton={true}
-				                onSubmitData={this.onSubmitData}
-				                privileges={this.props.privileges}
-				/>
+				<form onSubmit={this.onSubmitMemberData}>
+					<MemberDataFields key={this.state.memberData}
+					                  privileges={this.props.privileges}
+					                  memberData={this.state.memberData}
+					                  onChange={this.onMemberDataChanged}
+					/>
+					<ButtonInput type="submit"
+					             bsStyle="primary"
+					             value="Create member"
+					/>
+					<ButtonInput type="reset"
+					             value="Reset fields"
+					/>
+				</form>
 			</div>
 		);
 	},
