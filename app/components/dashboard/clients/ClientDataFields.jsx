@@ -2,15 +2,12 @@ import 'bootstrap/less/bootstrap.less';
 
 import _ from 'lodash';
 import React from 'react';
-import {ButtonInput, Input} from 'react-bootstrap';
+import {Input} from 'react-bootstrap';
 
 export default React.createClass({
 	propTypes: {
-		disabled: React.PropTypes.bool,
 		clientData: React.PropTypes.object,
-		showResetButton: React.PropTypes.bool,
-		submitButtonText: React.PropTypes.string,
-		onSubmitData: React.PropTypes.func.isRequired,
+		onChange: React.PropTypes.func.isRequired,
 	},
 	
 	getDefaultProps: function() {
@@ -20,9 +17,6 @@ export default React.createClass({
 				trusted: false,
 				redirectUri: null,
 			},
-			disabled: false,
-			showResetButton: true,
-			submitButtonText: 'Save client',
 		};
 	},
 	
@@ -32,7 +26,8 @@ export default React.createClass({
 			data: {
 				type: 'clients',
 				attributes: {
-					name, trusted,
+					name,
+					trusted: trusted || false,
 					'redirect-uri': redirectUri,
 				},
 			},
@@ -44,6 +39,7 @@ export default React.createClass({
 		let data = _.clone(this.state.data);
 		_.set(data, 'attributes.name', newName);
 		this.setState({ data });
+		this.props.onChange(data);
 	},
 	
 	onTrustedChanged: function(event) {
@@ -51,6 +47,7 @@ export default React.createClass({
 		let data = _.clone(this.state.data);
 		_.set(data, 'attributes.trusted', newTrusted);
 		this.setState({ data });
+		this.props.onChange(data);
 	},
 	
 	onRedirectUriChanged: function(event) {
@@ -58,49 +55,34 @@ export default React.createClass({
 		let data = _.clone(this.state.data);
 		_.set(data, 'attributes.redirect-uri', newRedirectUri);
 		this.setState({ data });
-	},
-	
-	onSubmitForm: function(event) {
-		event.preventDefault();
-		this.props.onSubmitData(this.state.data);
+		this.props.onChange(data);
 	},
 	
 	render: function() {
+		let clientData = this.state.data;
 		let canEditClient = _.includes(this.props.privileges, 'client:edit');
-		let canTrustClient = _.includes(this.props.privileges, 'client:trust');
 		return (
-			<form onSubmit={this.onSubmitForm}>
+			<div>
 				<Input required
 				       type="text"
 				       label="Name"
 				       readOnly={!canEditClient}
 				       onChange={this.onNameChanged}
-				       value={this.state.data.attributes.name}
+				       value={clientData.attributes.name}
 				/>
 				<Input type="text"
 				       label="Redirect URI"
 				       readOnly={!canEditClient}
 				       onChange={this.onRedirectUriChanged}
-				       value={this.state.data.attributes['redirect-uri']}
+				       value={clientData.attributes['redirect-uri']}
 				/>
 				<Input type="checkbox"
 				       label="Trusted"
+				       readOnly={!canEditClient}
 				       onChange={this.onTrustedChanged}
-				       readOnly={!canEditClient || !canTrustClient}
-				       checked={this.state.data.attributes.trusted}
+				       checked={clientData.attributes.trusted}
 				/>
-				{ canEditClient ? ([
-					<ButtonInput key={0}
-					             type="submit"
-					             bsStyle="primary"
-					             disabled={this.props.disabled}
-					             value={this.props.submitButtonText}
-					/>,
-					this.props.showResetButton
-						? <ButtonInput key={1} type="reset" value="Reset"/>
-						: ''
-				]) : '' }
-			</form>
+			</div>
 		);
 	},
 });

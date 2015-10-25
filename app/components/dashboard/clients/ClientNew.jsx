@@ -1,7 +1,10 @@
+import 'bootstrap/less/bootstrap.less';
+
 import React from 'react';
 import {Navigation, State} from 'react-router';
+import {Alert, ButtonInput} from 'react-bootstrap';
 
-import ClientDataForm from './ClientDataForm';
+import ClientDataFields from './ClientDataFields';
 import {ClientActions} from '../../../actions';
 
 export default React.createClass({
@@ -10,6 +13,7 @@ export default React.createClass({
 	getInitialState: function() {
 		return {
 			error: null,
+			clientData: {},
 		};
 	},
 	
@@ -18,8 +22,12 @@ export default React.createClass({
 		ClientActions.createClient.failed.listen(this.onCreateClientFailed);
 	},
 	
-	onSubmitData: function(clientData) {
-		ClientActions.createClient(clientData);
+	onClientDataChanged: function(clientData) {
+		this.setState({ clientData });
+	},
+	
+	onSubmitClientData: function() {
+		ClientActions.createClient(this.state.clientData);
 	},
 	
 	onCreateClientCompleted: function() {
@@ -45,10 +53,20 @@ export default React.createClass({
 					       onDismiss={this.onDismissError}
 					>{ lastError.message || 'Unknown error' }</Alert>
 				: '' }
-				<ClientDataForm showResetButton={true}
-				                onSubmitData={this.onSubmitData}
-				                privileges={this.props.privileges}
-				/>
+				<form onSubmit={this.onSubmitClientData}>
+					<ClientDataFields key={this.state.clientData}
+					                  privileges={this.props.privileges}
+					                  clientData={this.state.clientData}
+					                  onChange={this.onClientDataChanged}
+					/>
+					<ButtonInput type="submit"
+					             bsStyle="primary"
+					             value="Create client"
+					/>
+					<ButtonInput type="reset"
+					             value="Reset fields"
+					/>
+				</form>
 			</div>
 		);
 	},

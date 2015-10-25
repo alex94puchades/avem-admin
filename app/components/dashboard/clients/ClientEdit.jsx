@@ -1,10 +1,10 @@
 import 'bootstrap/less/bootstrap.less';
 
 import React from 'react';
-import {Alert} from 'react-bootstrap';
 import {Navigation, State} from 'react-router';
+import {Alert, ButtonInput} from 'react-bootstrap';
 
-import ClientDataForm from './ClientDataForm';
+import ClientDataFields from './ClientDataFields';
 import {ClientActions} from '../../../actions';
 import {ClientService} from '../../../services';
 
@@ -14,7 +14,7 @@ export default React.createClass({
 	getInitialState: function() {
 		return {
 			error: null,
-			client: null,
+			clientData: null,
 		};
 	},
 	
@@ -23,13 +23,17 @@ export default React.createClass({
 		ClientActions.updateClient.failed.listen(this.onUpdateClientFailed);
 		ClientActions.updateClient.completed.listen(this.onUpdateClientCompleted);
 		ClientService.readClient(clientId).then(response => {
-			this.setState({ client: response.data });
+			this.setState({ clientData: response.data });
 		});
 	},
 	
-	onSubmitData: function(clientData) {
+	onClientDataChanged: function(clientData) {
+		this.setState({ clientData });
+	},
+	
+	onSubmitClientData: function() {
 		let clientId = this.props.params.id;
-		ClientActions.updateClient(clientId, clientData);
+		ClientActions.updateClient(clientId, this.state.clientData);
 	},
 	
 	onUpdateClientCompleted: function() {
@@ -47,21 +51,24 @@ export default React.createClass({
 	},
 	
 	render: function() {
-		let lastError = this.state.error;
 		return (
 			<div>
 				{ this.state.error ?
 					<Alert bsStyle="warning"
 					       onDismiss={this.onDismissError}
-					>{ lastError.message || 'Unknown error' }</Alert>
+					>{ this.state.error.message || 'Unknown error' }</Alert>
 				: '' }
-				<ClientDataForm key={this.state.client}
-					            showResetButton={false}
-					            clientData={this.state.client}
-					            onSubmitData={this.onSubmitData}
-					            privileges={this.props.privileges}
-					            disabled={this.state.client === null}
-				/>
+				<form onSubmit={this.onSubmitClientData}>
+					<ClientDataFields key={this.state.clientData}
+					                  privileges={this.props.privileges}
+					                  clientData={this.state.clientData}
+					                  onChange={this.onClientDataChanged}
+					/>
+					<ButtonInput type="submit"
+					             bsStyle="primary"
+					             value="Save client"
+					/>
+				</form>
 			</div>
 		);
 	},
