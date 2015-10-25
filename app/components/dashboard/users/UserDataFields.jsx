@@ -1,27 +1,23 @@
-import React from 'react';
-import {Input, ButtonInput} from 'react-bootstrap';
+import 'bootstrap/less/bootstrap.less';
 
-import {RoleService} from '../../../services';
+import React from 'react';
+import {Input} from 'react-bootstrap';
 
 export default React.createClass({
 	propTypes: {
-		disabled: React.PropTypes.bool,
 		userData: React.PropTypes.object,
-		showResetButton: React.PropTypes.bool,
-		submitButtonText: React.PropTypes.string,
-		onSubmitData: React.PropTypes.func.isRequired,
+		onChange: React.PropTypes.func.isRequired,
+		roles: React.PropTypes.arrayOf(React.PropTypes.object),
 	},
 	
 	getDefaultProps: function() {
 		return {
+			roles: [],
 			userData: {
 				role: null,
 				email: null,
 				password: null,
 			},
-			disabled: false,
-			showResetButton: true,
-			submitButtonText: 'Save user',
 		};
 	},
 	
@@ -34,20 +30,10 @@ export default React.createClass({
 					email, password,
 				},
 				relationships: {
-					role: {
-						id: role,
-						type: 'roles',
-					},
+					role,
 				},
 			},
-			availableRoles: null,
 		};
-	},
-	
-	componentDidMount: function() {
-		RoleService.searchRoles({ name: '*' }).then(roles => {
-			this.setState({ availableRoles: roles });
-		});
 	},
 	
 	onEmailChanged: function(event) {
@@ -55,6 +41,7 @@ export default React.createClass({
 		let data = _.clone(this.state.data);
 		_.set(data, 'attributes.email', newEmail);
 		this.setState({ data });
+		this.props.onChange(data);
 	},
 	
 	onPasswordChanged: function(event) {
@@ -62,62 +49,53 @@ export default React.createClass({
 		let data = _.clone(this.state.data);
 		_.set(data, 'attributes.password', newPassword);
 		this.setState({ data });
+		this.props.onChange(data);
 	},
 	
 	onRoleChanged: function(event) {
 		let newRole = event.target.value;
 		let data = _.clone(this.state.data);
-		_.set(data, 'relationships.role.id', newRole);
+		_.set(data, 'relationships.role', {
+			type: 'roles',
+			id: newRole,
+		});
 		this.setState({ data });
-	},
-	
-	onSubmitForm: function(event) {
-		event.preventDefault();
-		this.props.onSubmitData(this.state.data);
+		this.props.onChange(data);
 	},
 	
 	render: function() {
+		let userData = this.state.data;
 		let canEditUser = _.includes(this.props.privileges, 'user:edit');
 		return (
-			<form onSubmit={this.onSubmitForm}>
+			<div>
 				<Input type="text"
 				       label="Email"
 				       readOnly={!canEditUser}
 				       onChange={this.onEmailChanged}
-				       value={this.state.data.attributes.email}
+				       value={userData.attributes.email}
 				/>
 				<Input type="password"
 				       label="Password"
 				       readOnly={!canEditUser}
 				       onChange={this.onPasswordChanged}
-				       value={this.state.data.attributes.password}
+				       value={userData.attributes.password}
 				/>
 				<Input label="Role"
 				       type="select"
 				       readOnly={!canEditUser}
 				       placeholder="Select role"
 				       onChange={this.onRoleChanged}
+				       value={_.get(userData.relationships.role, 'id')}
 				>
-				{ _.map(this.state.availableRoles, (role, key) => {
+				{ _.map(this.props.roles, role => {
 					return (
-						<option key={key}
+						<option key={role.id}
 						        value={role.id}
 						>{role.name}</option>
 					);
 				}) }
 				</Input>
-				{ canEditUser ? ([
-					<ButtonInput key={0}
-					             type="submit"
-					             bsStyle="primary"
-					             disabled={this.props.disabled}
-					             value={this.props.submitButtonText}
-					/>,
-					this.props.showResetButton
-						? <ButtonInput key={1} type="reset" value="Reset"/>
-						: ''
-				]) : '' }
-			</form>
+			</div>
 		);
 	},
 });

@@ -1,20 +1,21 @@
 import 'bootstrap/less/bootstrap.less';
 
 import React from 'react';
-import {Alert} from 'react-bootstrap';
 import {Navigation, State} from 'react-router';
+import {Alert, ButtonInput} from 'react-bootstrap';
 
-import UserDataForm from './UserDataForm';
+import UserDataFields from './UserDataFields';
 import {UserActions} from '../../../actions';
-import {UserService} from '../../../services';
+import {UserService, RoleService} from '../../../services';
 
 export default React.createClass({
 	mixins: [Navigation, State],
 	
 	getInitialState: function() {
 		return {
-			user: null,
 			error: null,
+			roles: null,
+			userData: null,
 		};
 	},
 	
@@ -23,13 +24,20 @@ export default React.createClass({
 		UserActions.updateUser.failed.listen(this.onUpdateUserFailed);
 		UserActions.updateUser.completed.listen(this.onUpdateUserCompleted);
 		UserService.readUser(userId).then(response => {
-			this.setState({ user: response.data });
+			this.setState({ userData: response.data });
+		});
+		RoleService.searchRoles({ name: '*' }).then(roles => {
+			this.setState({ roles });
 		});
 	},
 	
-	onSubmitData: function(userData) {
+	onUserDataChanged: function(userData) {
+		this.setState({ userData });
+	},
+	
+	onSubmitUserData: function() {
 		let userId = this.props.params.id;
-		UserActions.updateUser(userId, userData);
+		UserActions.updateUser(userId, this.state.userData);
 	},
 	
 	onUpdateUserCompleted: function() {
@@ -55,13 +63,19 @@ export default React.createClass({
 					       onDismiss={this.onDismissError}
 					>{ lastError.message || 'Unknown error' }</Alert>
 				: '' }
-				<UserDataForm key={this.state.user}
-					          showResetButton={false}
-					          userData={this.state.user}
-					          onSubmitData={this.onSubmitData}
-					          privileges={this.props.privileges}
-					          disabled={this.state.user === null}
-				/>
+				<form onSubmit={this.onSubmitUserData}>
+					<UserDataFields key={ this.state.roles &&
+					                      this.state.userData }
+					                roles={this.state.roles}
+					                userData={this.state.userData}
+					                onChange={this.onUserDataChanged}
+					                privileges={this.props.privileges}
+					/>
+					<ButtonInput type="submit"
+					             bsStyle="primary"
+					             value="Save user"
+					/>
+				</form>
 			</div>
 		);
 	},
