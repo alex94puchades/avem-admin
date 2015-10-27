@@ -77,7 +77,8 @@ export default React.createClass({
 	render: function() {
 		return (
 			<form onSubmit={this.onSubmitForm}>
-				<Input type="text"
+				<Input autosave
+				       type="search"
 				       value={this.state.searchString}
 				       placeholder={this.props.placeholder}
 				       onChange={this.onSearchStringChanged}
