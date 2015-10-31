@@ -3,7 +3,7 @@ import 'bootstrap/less/bootstrap.less';
 import React from 'react';
 import {Input, Collapse} from 'react-bootstrap';
 
-import UserDataFields from '../users/UserDataFields';
+import UserSearch from '../users/UserSearch';
 
 export default React.createClass({
 	propTypes: {
@@ -17,9 +17,9 @@ export default React.createClass({
 			users: [],
 			memberData: {
 				user: null,
-				firstName: '',
-				lastName: '',
 				gender: null,
+				lastName: '',
+				firstName: '',
 				birthday: null,
 				renewDate: null,
 			},
@@ -42,6 +42,7 @@ export default React.createClass({
 					user,
 				},
 			},
+			memberUserAction: user ? 'choose' : 'none',
 		};
 	},
 	
@@ -80,7 +81,7 @@ export default React.createClass({
 	},
 	
 	onGenderChanged: function(event) {
-		let newGender = event.target.value;
+		let newGender = event.target.value || null;
 		let data = _.clone(this.state.data);
 		_.set(data, 'attributes.gender', newGender);
 		this.setState({ data });
@@ -97,6 +98,7 @@ export default React.createClass({
 	
 	render: function() {
 		let memberData = this.state.data;
+		let {memberUserAction} = this.state;
 		let canEditMember = _.includes(this.props.privileges, 'member:edit');
 		let canRenewMember = _.includes(this.props.privileges, 'member:renew');
 		return (
@@ -108,7 +110,7 @@ export default React.createClass({
 				       onChange={this.onUserChanged}
 				       value={_.get(memberData.relationships.user, 'id')}
 				>
-					<option value={null}>n/a</option>
+					<option value="">n/a</option>
 					{ _.map(this.props.users, user => {
 						return (
 							<option key={user.id}
@@ -144,7 +146,7 @@ export default React.createClass({
 				       onChange={this.onGenderChanged}
 				       value={memberData.attributes.gender}
 				>
-					<option value={null}>n/a</option>
+					<option value=''>n/a</option>
 					<option value="male">Male</option>
 					<option value="female">Female</option>
 					<option value="other">Other</option>

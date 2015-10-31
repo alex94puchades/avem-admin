@@ -90,6 +90,7 @@ export default React.createClass({
 				>
 					<DataView.Headers>
 						<UserDataView.Headers/>
+						<DataView.Header></DataView.Header>
 					</DataView.Headers>
 					<DataView.Each handler={ user => {
 						return (

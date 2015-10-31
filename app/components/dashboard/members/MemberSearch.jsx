@@ -80,7 +80,7 @@ export default React.createClass({
 				           }}
 				           default="fullName"
 				           onSearch={this.onSearchMembers}
-				           placeholder='Member search, ie: "Some Member"'
+				           placeholder='Member search, ie: "Name Surname"'
 				/>
 				{ this.state.error ?
 					<Alert bsStyle="warning"
@@ -92,6 +92,7 @@ export default React.createClass({
 				>
 					<DataView.Headers>
 						<MemberDataView.Headers/>
+						<DataView.Header></DataView.Header>
 					</DataView.Headers>
 					<DataView.Each handler={ member => {
 						return (
