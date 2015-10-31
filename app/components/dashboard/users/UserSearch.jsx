@@ -5,11 +5,11 @@ import React from 'react';
 import {Link} from 'react-router';
 import {ListenerMixin} from 'reflux';
 import {LinkContainer} from 'react-router-bootstrap';
-import {Alert, Button, ButtonGroup, Modal, Table} from 'react-bootstrap';
+import {Alert, Button, ButtonGroup, Modal} from 'react-bootstrap';
 
-import {SearchBox} from '../../common';
 import {UserActions} from '../../../actions';
 import {UserSearchStore} from '../../../stores';
+import {DataView, SearchBox} from '../../common';
 import UserDataView from './UserDataView';
 
 export default React.createClass({
@@ -68,42 +68,53 @@ export default React.createClass({
 	},
 
 	render: function() {
-		let lastError = this.state.error;
 		let canAddUser = _.includes(this.props.privileges, 'user:add');
 		let canEditUser = _.includes(this.props.privileges, 'user:edit');
 		let canRemoveUser = _.includes(this.props.privileges, 'user:remove');
 		return (
 			<div>
-				<SearchBox ops={{ role: { multi: false, merge: 'replace' },
-				                  email: { multi: false, merge: 'append' } }}
-				           default="email" onSearch={this.onSearchUsers}
+				<SearchBox default="email" onSearch={this.onSearchUsers}
 				           placeholder='User search, ie: "user.email@domain.com"'
+				           ops={{
+				               role: { multi: false, merge: 'replace' },
+				               email: { multi: false, merge: 'append' },
+				           }}
 				/>
 				{ this.state.error ?
 					<Alert bsStyle="warning"
 					       onDismiss={this.onDismissError}
-					>{lastError.message || 'Unknown error'}</Alert>
+					>{ this.state.error.message || 'Unknown error' }</Alert>
 				: '' }
-				<UserDataView key={this.state.users}
-				              users={this.state.users}
-				              appendData={ user => {
-					return (
-						<ButtonGroup fill>
-							<LinkContainer to={`/users/${user.id}`}
-							               query={{ return_to: '/users' }}
-							>
-								<Button bsSize='small'
-								        disabled={!canEditUser}
-								>Edit</Button>
-							</LinkContainer>
-							<Button bsSize="small"
-							        bsStyle="danger"
-							        disabled={!canRemoveUser}
-							        onClick={this.onRemoveUser.bind(this, user)}
-							>Remove</Button>
-						</ButtonGroup>
-					);
-				}} />
+				<DataView key={this.state.users}
+				          data={this.state.users}
+				>
+					<DataView.Headers>
+						<UserDataView.Headers/>
+					</DataView.Headers>
+					<DataView.Each handler={ user => {
+						return (
+							<div>
+								<UserDataView.Data model={user}/>
+								<DataView.Data>
+									<ButtonGroup fill>
+										<LinkContainer to={`/users/${user.id}`}
+										               query={{ return_to: '/users' }}
+										>
+											<Button bsSize='small'
+											        disabled={!canEditUser}
+											>Edit</Button>
+										</LinkContainer>
+										<Button bsSize="small"
+										        bsStyle="danger"
+										        disabled={!canRemoveUser}
+										        onClick={this.onRemoveUser.bind(this, user)}
+										>Remove</Button>
+									</ButtonGroup>
+								</DataView.Data>
+							</div>
+						);
+					}}/>
+				</DataView>
 				<LinkContainer to='/users/new'
 				               query={{ return_to: '/users' }}
 				>
