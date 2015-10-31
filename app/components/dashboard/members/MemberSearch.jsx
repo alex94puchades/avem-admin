@@ -5,11 +5,11 @@ import React from 'react';
 import {Link} from 'react-router';
 import {ListenerMixin} from 'reflux';
 import {LinkContainer} from 'react-router-bootstrap';
-import {Alert, Button, ButtonGroup, Modal, Table} from 'react-bootstrap';
+import {Alert, Button, ButtonGroup, Modal} from 'react-bootstrap';
 
-import {SearchBox} from '../../common';
 import {MemberActions} from '../../../actions';
 import {MemberSearchStore} from '../../../stores';
+import {DataView, SearchBox} from '../../common';
 import MemberDataView from './MemberDataView';
 
 export default React.createClass({
@@ -18,6 +18,7 @@ export default React.createClass({
 	getInitialState: function() {
 		return {
 			error: null,
+			members: [],
 			removeMember: false,
 		};
 	},
@@ -86,26 +87,36 @@ export default React.createClass({
 					       onDismiss={this.onDismissError}
 					>{ this.state.error.message || 'Unknown error' }</Alert>
 				: '' }
-				<MemberDataView key={this.state.members}
-				                members={this.state.members}
-				                appendData={ member => {
-					return (
-						<ButtonGroup fill>
-							<LinkContainer to={`/members/${member.id}`}
-							               query={{ return_to: '/members' }}
-							>
-								<Button bsSize="small"
-								        disabled={!canEditMember}
-								>Edit</Button>
-							</LinkContainer>
-							<Button bsSize="small"
-							        bsStyle="danger"
-							        disabled={!canRemoveMember}
-							        onClick={this.onRemoveMember.bind(this, member)}
-							>Remove</Button>
-						</ButtonGroup>
-					);
-				}} />
+				<DataView key={this.state.members}
+				          data={this.state.members}
+				>
+					<DataView.Headers>
+						<MemberDataView.Headers/>
+					</DataView.Headers>
+					<DataView.Each handler={ member => {
+						return (
+							<div>
+								<MemberDataView.Data model={member}/>
+								<DataView.Data>
+										<ButtonGroup fill>
+										<LinkContainer to={`/members/${member.id}`}
+										               query={{ return_to: '/members' }}
+										>
+											<Button bsSize="small"
+											        disabled={!canEditMember}
+											>Edit</Button>
+										</LinkContainer>
+										<Button bsSize="small"
+										        bsStyle="danger"
+										        disabled={!canRemoveMember}
+										        onClick={this.onRemoveMember.bind(this, member)}
+										>Remove</Button>
+									</ButtonGroup>
+								</DataView.Data>
+							</div>
+						);
+					}}/>
+				</DataView>
 				<LinkContainer to="/members/new"
 				               query={{ return_to: '/members' }}
 				>
