@@ -1,7 +1,7 @@
 import 'bootstrap/less/bootstrap.less';
 
 import React from 'react';
-import {Navigation, State} from 'react-router';
+import {History} from 'react-router';
 import {Alert, ButtonInput} from 'react-bootstrap';
 
 import UserDataFields from './UserDataFields';
@@ -9,7 +9,7 @@ import {UserActions} from '../../../actions';
 import {RoleService} from '../../../services';
 
 export default React.createClass({
-	mixins: [Navigation, State],
+	mixins: [History],
 	
 	getInitialState: function() {
 		return {

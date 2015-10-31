@@ -1,15 +1,15 @@
 import 'bootstrap/less/bootstrap.less';
 
 import React from 'react';
-import {Alert, Input} from 'react-bootstrap';
-import {Navigation, State} from 'react-router';
+import {History} from 'react-router';
+import {Alert, ButtonInput} from 'react-bootstrap';
 
 import MemberDataFields from './MemberDataFields';
 import {MemberActions} from '../../../actions';
 import {MemberService, UserService} from '../../../services';
 
 export default React.createClass({
-	mixins: [Navigation, State],
+	mixins: [History],
 	
 	getInitialState: function() {
 		return {
@@ -69,9 +69,9 @@ export default React.createClass({
 					                  memberData={this.state.memberData}
 					                  onChange={this.onMemberDataChanged}
 					/>
-					<Input type="submit"
-					       bsStyle="primary"
-					       value="Save member"
+					<ButtonInput type="submit"
+					             bsStyle="primary"
+					             value="Save member"
 					/>
 				</form>
 			</div>
