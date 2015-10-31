@@ -37,6 +37,9 @@ export default React.createClass({
 							<LinkContainer to='/members'>
 								<NavItem>Members</NavItem>
 							</LinkContainer>
+							<LinkContainer to='/activities'>
+								<NavItem>Activities</NavItem>
+							</LinkContainer>
 						</Nav>
 					</Col>
 					<Col md={9}>

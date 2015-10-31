@@ -19,3 +19,7 @@ export { default as ClientNew } from './dashboard/clients/ClientNew';
 export { default as MemberSearch } from './dashboard/members/MemberSearch';
 export { default as MemberEdit } from './dashboard/members/MemberEdit';
 export { default as MemberNew } from './dashboard/members/MemberNew';
+
+export { default as ActivitySearch } from './dashboard/activities/ActivitySearch';
+export { default as ActivityEdit } from './dashboard/activities/ActivityEdit';
+export { default as ActivityNew } from './dashboard/activities/ActivityNew';

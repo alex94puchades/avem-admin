@@ -5,3 +5,4 @@ export { default as UserSearchStore } from './UserSearchStore';
 export { default as ClientSearchStore } from './ClientSearchStore';
 
 export { default as MemberSearchStore } from './MemberSearchStore';
+export { default as ActivitySearchStore } from './ActivitySearchStore';

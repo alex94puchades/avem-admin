@@ -5,3 +5,4 @@ export { default as UserActions } from './UserActions';
 export { default as ClientActions } from './ClientActions';
 
 export { default as MemberActions } from './MemberActions';
+export { default as ActivityActions } from './ActivityActions';

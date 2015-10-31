@@ -20,6 +20,9 @@ import {
 	MemberSearch,
 	MemberNew,
 	MemberEdit,
+	ActivitySearch,
+	ActivityNew,
+	ActivityEdit,
 } from './components';
 
 const routes = (
@@ -39,6 +42,9 @@ const routes = (
 			<Route path="/members" component={MemberSearch}/>
 			<Route path="/members/new" component={MemberNew}/>
 			<Route path="/members/:id" component={MemberEdit}/>
+			<Route path="/activities" component={ActivitySearch}/>
+			<Route path="/activities/new" component={ActivityNew}/>
+			<Route path="/activities/:id" component={ActivityEdit}/>
 		</Route>
 	</Route>
 );
