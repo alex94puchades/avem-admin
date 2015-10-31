@@ -7,9 +7,9 @@ import {ListenerMixin} from 'reflux';
 import {LinkContainer} from 'react-router-bootstrap';
 import {Alert, Button, ButtonGroup, Modal, Table} from 'react-bootstrap';
 
-import {SearchBox} from '../../common';
 import {ClientActions} from '../../../actions';
 import {ClientSearchStore} from '../../../stores';
+import {DataView, SearchBox} from '../../common';
 import ClientDataView from './ClientDataView';
 
 export default React.createClass({
@@ -68,45 +68,55 @@ export default React.createClass({
 	},
 
 	render: function() {
-		let lastError = this.state.error;
 		let canAddClient = _.includes(this.props.privileges, 'client:add');
 		let canEditClient = _.includes(this.props.privileges, 'client:edit');
 		let canRemoveClient = _.includes(this.props.privileges, 'client:remove');
+		console
 		return (
 			<div>
 				<SearchBox default="name"
 				           onSearch={this.onSearchClients}
 				           placeholder='Client search, ie: "client.name.*"'
 				           ops={{
-				           	name: { multi: false, merge: 'append' },
-				           	trusted: { multi: false, merge: 'replace' },
+				               name: { multi: false, merge: 'append' },
+				               trusted: { multi: false, merge: 'replace' },
 				           }}
 				/>
 				{ this.state.error ?
 					<Alert bsStyle="warning"
 					       onDismiss={this.onDismissError}
-					>{lastError.message || 'Unknown error'}</Alert>
+					>{ this.state.error.message || 'Unknown error' }</Alert>
 				: '' }
-				<ClientDataView key={this.state.clients}
-				                clients={this.state.clients}
-				                appendData={ (client) => {
-					return (
-						<ButtonGroup fill>
-							<LinkContainer to={`/clients/${client.id}`}
-							               query={{ return_to: '/clients' }}
-							>
-								<Button bsSize="small"
-								        disabled={!canEditClient}
-								>Edit</Button>
-							</LinkContainer>
-							<Button bsSize="small"
-							        bsStyle="danger"
-							        disabled={!canRemoveClient}
-							        onClick={this.onRemoveClient.bind(this, client)}
-							>Remove</Button>
-						</ButtonGroup>
-					);
-				}}/>
+				<DataView key={this.state.clients}
+				          data={this.state.clients}
+				>
+					<DataView.Headers>
+						<ClientDataView.Headers/>
+					</DataView.Headers>
+					<DataView.Each handler={client => {
+						return (
+							<div>
+								<ClientDataView.Data model={client}/>
+								<DataView.Data>
+									<ButtonGroup fill>
+										<LinkContainer to={`/clients/${client.id}`}
+										               query={{ return_to: '/clients' }}
+										>
+											<Button bsSize="small"
+											        disabled={!canEditClient}
+											>Edit</Button>
+										</LinkContainer>
+										<Button bsSize="small"
+										        bsStyle="danger"
+										        disabled={!canRemoveClient}
+										        onClick={this.onRemoveClient.bind(this, client)}
+										>Remove</Button>
+									</ButtonGroup>
+								</DataView.Data>
+							</div>
+						);
+					}}/>
+				</DataView>
 				<LinkContainer to="/clients/new"
 				               query={{ return_to: '/clients' }}
 				>
