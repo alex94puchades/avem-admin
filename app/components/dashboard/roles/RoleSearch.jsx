@@ -5,11 +5,11 @@ import React from 'react';
 import {Link} from 'react-router';
 import {ListenerMixin} from 'reflux';
 import {LinkContainer} from 'react-router-bootstrap';
-import {Alert, Button, ButtonGroup, Modal, Table} from 'react-bootstrap';
+import {Alert, Button, ButtonGroup, Modal} from 'react-bootstrap';
 
-import {SearchBox} from '../../common';
 import {RoleActions} from '../../../actions';
 import {RoleSearchStore} from '../../../stores';
+import {DataView, SearchBox} from '../../common';
 import RoleDataView from './RoleDataView';
 
 export default React.createClass({
@@ -68,42 +68,53 @@ export default React.createClass({
 	},
 
 	render: function() {
-		let lastError = this.state.error;
 		let canAddRole = _.includes(this.props.privileges, 'role:add');
 		let canEditRole = _.includes(this.props.privileges, 'role:edit');
 		let canRemoveRole = _.includes(this.props.privileges, 'role:remove');
 		return (
 			<div>
-				<SearchBox ops={{ name: { multi: false },
-				                  trusted: { multi: false } }}
-				           default="name" onSearch={this.onSearchRoles}
+				<SearchBox default="name" onSearch={this.onSearchRoles}
 				           placeholder='Role search, ie: admin, guest...'
+				           ops={{
+				               name: { multi: false },
+				               trusted: { multi: false }
+				           }}
 				/>
 				{ this.state.error ?
 					<Alert bsStyle="warning"
 					       onDismiss={this.onDismissError}
-					>{lastError.message || 'Unknown error'}</Alert>
+					>{this.state.error.message || 'Unknown error'}</Alert>
 				: '' }
-				<RoleDataView key={this.state.roles}
-				              roles={this.state.roles}
-				              appendData={ role => {
-					return (
-						<ButtonGroup fill>
-							<LinkContainer to={`/roles/${role.id}`}
-							               query={{ return_to: '/roles' }}
-							>
-								<Button bsSize="small"
-								        disabled={!canEditRole}
-								>Edit</Button>
-							</LinkContainer>
-							<Button bsSize="small"
-							        bsStyle="danger"
-							        disabled={!canRemoveRole}
-							        onClick={this.onRemoveRole.bind(this, role)}
-							>Remove</Button>
-						</ButtonGroup>
-					);
-				}} />
+				<DataView key={this.state.roles}
+				          data={this.state.roles}
+				>
+					<DataView.Headers>
+						<RoleDataView.Headers/>
+					</DataView.Headers>
+					<DataView.Each handler={ role => {
+						return (
+							<div>
+								<RoleDataView.Data model={role}/>
+								<DataView.Data>
+									<ButtonGroup fill>
+										<LinkContainer to={`/roles/${role.id}`}
+										               query={{ return_to: '/roles' }}
+										>
+											<Button bsSize="small"
+											        disabled={!canEditRole}
+											>Edit</Button>
+										</LinkContainer>
+										<Button bsSize="small"
+										        bsStyle="danger"
+										        disabled={!canRemoveRole}
+										        onClick={this.onRemoveRole.bind(this, role)}
+										>Remove</Button>
+									</ButtonGroup>
+								</DataView.Data>
+							</div>
+						);
+					}}/>
+				</DataView>
 				<LinkContainer to="/roles/new"
 				               query={{ return_to: '/roles' }}
 				>
