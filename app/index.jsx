@@ -1,12 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Router, {
-	Route,
-	Redirect,
-	DefaultRoute,
-	NotFoundRoute,
-} from 'react-router';
+import {Route, Router} from 'react-router';
 
 import {
 	App,
@@ -28,10 +23,10 @@ import {
 } from './components';
 
 const routes = (
-	<Route name="root" path="/" component={App}>
-		<Route name="login" component={LoginPage}/>
-		<Route name="logout" component={LogoutPage}/>
-		<Route name="dashboard" path="/" component={Dashboard}>
+	<Route component={App}>
+		<Route path="/login" component={LoginPage}/>
+		<Route path="/logout" component={LogoutPage}/>
+		<Route path="/" component={Dashboard}>
 			<Route path="/users" component={UserSearch}/>
 			<Route path="/users/new" component={UserNew}/>
 			<Route path="/users/:id" component={UserEdit}/>

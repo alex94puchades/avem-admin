@@ -17,7 +17,7 @@ export default {
 	componentDidMount: function() {
 		if (!CredentialStore.authenticated) {
 			this.history.pushState(null, '/login', {
-				return_to: this.props.location,
+				return_to: this.props.location.pathname,
 			});
 		} else {
 			AuthService.getOwnPrivileges().then(privileges => {

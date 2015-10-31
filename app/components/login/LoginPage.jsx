@@ -1,15 +1,15 @@
 import 'bootstrap/less/bootstrap.less';
 
 import React from 'react';
+import {History} from 'react-router';
 import {Alert} from 'react-bootstrap';
-import {State, Navigation} from 'react-router';
 
 import {CredentialStore} from '../../stores';
 import {AuthActions} from '../../actions';
 import LoginForm from './LoginForm';
 
 export default React.createClass({
-	mixins: [State,	Navigation],
+	mixins: [History],
 
 	getInitialState: function() {
 		return {
@@ -23,21 +23,16 @@ export default React.createClass({
 	},
 	
 	onLoginCompleted: function() {
-		let destPath = this.props.query['return_to'];
-		this.transitionTo(destPath || 'dashboard');
+		let returnPath = this.props.location.query['return_to'];
+		this.history.pushState(null, returnPath || '/dash');
 	},
 	
 	onLoginFailed: function(error) {
 		this.setState({ error });
 	},
 	
-	reset: function() {
+	onDismissError: function() {
 		this.setState({ error: null });
-	},
-	
-	redirect: function() {
-		let destPath = this.props.query['return_to'];
-		this.transitionTo(destPath || 'dashboard');
 	},
 	
 	render: function() {
@@ -53,10 +48,10 @@ export default React.createClass({
 				{ this.state.error ?
 					<Alert bsStyle="warning"
 					       dismissAfter={3000}
-					       onDismiss={this.reset}
-					>{error.message || 'Unknown error'}</Alert>
-				: '' }
-				<LoginForm disabled={this.state.error}/>
+					       onDismiss={this.onDismissError}
+					>{ this.state.error.message || 'Unknown error' }</Alert>
+				: null }
+				<LoginForm disabled={this.state.error !== null}/>
 			</div>
 		);
 	},

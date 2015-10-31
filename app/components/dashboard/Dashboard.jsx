@@ -3,7 +3,7 @@ import 'bootstrap/less/bootstrap.less';
 import _ from 'lodash';
 import React from 'react';
 import {LinkContainer} from 'react-router-bootstrap';
-import {Nav, NavItem, Grid, Row, Col, PageHeader} from 'react-bootstrap';
+import {Col, Grid, Nav, NavItem, PageHeader, Row} from 'react-bootstrap';
 
 import {Authenticated} from '../../mixins';
 
@@ -40,10 +40,12 @@ export default React.createClass({
 						</Nav>
 					</Col>
 					<Col md={9}>
-						{ React.cloneElement(this.props.children, {
-							key: this.state.privileges,
-							privileges: this.state.privileges,
-						}) }
+						{ this.props.children ?
+							React.cloneElement(this.props.children, {
+								key: this.state.privileges,
+								privileges: this.state.privileges,
+							})
+						: null }
 					</Col>
 				</Row>
 			</Grid>

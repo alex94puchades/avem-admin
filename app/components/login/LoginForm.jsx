@@ -2,11 +2,7 @@ import 'bootstrap/less/bootstrap.less';
 
 import React from 'react';
 import {ListenerMixin} from 'reflux';
-
-import {
-	Input,
-	ButtonInput,
-} from 'react-bootstrap';
+import {Input, ButtonInput} from 'react-bootstrap';
 
 import {CredentialStore} from '../../stores';
 import {AuthActions} from '../../actions';
@@ -61,9 +57,9 @@ export default React.createClass({
 	render: function() {
 		return (
 			<form onSubmit={this.login}>
-				<Input type="email"
-				       required
+				<Input required
 				       autofocus
+				       type="email"
 				       bsSize="large"
 				       addonBefore="@"
 				       placeholder="Email address"
@@ -71,21 +67,21 @@ export default React.createClass({
 				       disabled={this.props.disabled}
 				       onChange={this.onUsernameChanged}
 				/>
-				<Input type="password"
-				       required
-				       minlength="8"
+				<Input required
+				       minLength="8"
 				       bsSize="large"
+				       type="password"
 				       placeholder="Password"
 				       value={this.state.password}
 				       disabled={this.props.disabled}
 				       onChange={this.onPasswordChanged}
 				/>
-				<ButtonInput type="submit"
+				<ButtonInput block
+				             type="submit"
 				             value="Login"
 				             bsSize="large"
 				             bsStyle="primary"
 				             disabled={this.props.disabled}
-				             block
 				/>
 			</form>
 		);

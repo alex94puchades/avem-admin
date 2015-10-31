@@ -18,7 +18,7 @@ export default React.createClass({
 	},
 	
 	onLogoutCompleted: function() {
-		this.transitionTo('login');
+		this.history.pushState(null, '/login');
 	},
 	
 	render: function() {
