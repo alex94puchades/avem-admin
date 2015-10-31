@@ -37,9 +37,8 @@ export default React.createClass({
 	},
 	
 	onUpdateRoleCompleted: function() {
-		let returnTo = this.props.query['return_to'];
-		if (returnTo)
-			this.transitionTo(returnTo);
+		let returnTo = this.props.location.query['return_to'];
+		this.props.history.pushState(null, returnTo || '/');
 	},
 	
 	onUpdateRoleFailed: function(error) {
