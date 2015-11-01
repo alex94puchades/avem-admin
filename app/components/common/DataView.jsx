@@ -99,9 +99,7 @@ export const Each = DataView.Each = React.createClass({
 					let children = this.props.handler(param);
 					return (
 						<tr key={key}>
-							{ children.type === 'div'
-								? children.props.children
-								: children }
+							{ this.props.handler(param) }
 						</tr>
 					);
 				}) }

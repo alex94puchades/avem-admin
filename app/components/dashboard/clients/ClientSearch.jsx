@@ -91,31 +91,29 @@ export default React.createClass({
 				          data={this.state.clients}
 				>
 					<DataView.Headers>
-						<ClientDataView.Headers/>
+						{ ClientDataView.Headers }
 						<DataView.Header></DataView.Header>
 					</DataView.Headers>
 					<DataView.Each handler={client => {
-						return (
-							<div>
-								<ClientDataView.Data model={client}/>
-								<DataView.Data>
-									<ButtonGroup fill>
-										<LinkContainer to={`/clients/${client.id}`}
-										               query={{ return_to: '/clients' }}
-										>
-											<Button bsSize="small"
-											        disabled={!canEditClient}
-											>Edit</Button>
-										</LinkContainer>
+						return _.flatten([
+							ClientDataView.Data(client),
+							<DataView.Data>
+								<ButtonGroup fill>
+									<LinkContainer to={`/clients/${client.id}`}
+									               query={{ return_to: '/clients' }}
+									>
 										<Button bsSize="small"
-										        bsStyle="danger"
-										        disabled={!canRemoveClient}
-										        onClick={this.onRemoveClient.bind(this, client)}
-										>Remove</Button>
-									</ButtonGroup>
-								</DataView.Data>
-							</div>
-						);
+										        disabled={!canEditClient}
+										>Edit</Button>
+									</LinkContainer>
+									<Button bsSize="small"
+									        bsStyle="danger"
+									        disabled={!canRemoveClient}
+									        onClick={this.onRemoveClient.bind(this, client)}
+									>Remove</Button>
+								</ButtonGroup>
+							</DataView.Data>,
+						]);
 					}}/>
 				</DataView>
 				<LinkContainer to="/clients/new"

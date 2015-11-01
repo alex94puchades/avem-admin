@@ -89,31 +89,29 @@ export default React.createClass({
 				          data={this.state.users}
 				>
 					<DataView.Headers>
-						<UserDataView.Headers/>
+						{ UserDataView.Headers }
 						<DataView.Header></DataView.Header>
 					</DataView.Headers>
 					<DataView.Each handler={ user => {
-						return (
-							<div>
-								<UserDataView.Data model={user}/>
-								<DataView.Data>
-									<ButtonGroup fill>
-										<LinkContainer to={`/users/${user.id}`}
-										               query={{ return_to: '/users' }}
-										>
-											<Button bsSize='small'
-											        disabled={!canEditUser}
-											>Edit</Button>
-										</LinkContainer>
-										<Button bsSize="small"
-										        bsStyle="danger"
-										        disabled={!canRemoveUser}
-										        onClick={this.onRemoveUser.bind(this, user)}
-										>Remove</Button>
-									</ButtonGroup>
-								</DataView.Data>
-							</div>
-						);
+						return _.flatten([
+							UserDataView.Data(user),
+							<DataView.Data>
+								<ButtonGroup fill>
+									<LinkContainer to={`/users/${user.id}`}
+										           query={{ return_to: '/users' }}
+									>
+										<Button bsSize='small'
+											    disabled={!canEditUser}
+										>Edit</Button>
+									</LinkContainer>
+									<Button bsSize="small"
+										    bsStyle="danger"
+										    disabled={!canRemoveUser}
+										    onClick={this.onRemoveUser.bind(this, user)}
+									>Remove</Button>
+								</ButtonGroup>
+							</DataView.Data>,
+						]);
 					}}/>
 				</DataView>
 				<LinkContainer to='/users/new'

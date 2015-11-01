@@ -5,35 +5,14 @@ import React from 'react';
 
 import {DataView} from '../../common';
 
-export const Headers = React.createClass({
-	displayName: 'RoleDataView.Headers',
-	
-	render: function() {
-		return (
-			<div>
-				<DataView.Header>Name</DataView.Header>
-				<DataView.Header>Description</DataView.Header>
-			</div>
-		);
-	},
-});
+export const Headers = [
+	<DataView.Header>Name</DataView.Header>,
+	<DataView.Header>Description</DataView.Header>,
+];
 
-export const Data = React.createClass({
-	displayName: 'RoleDataView.Data',
-	
-	propTypes: {
-		model: React.PropTypes.object.isRequired,
-	},
-	
-	render: function() {
-		let role = this.props.model;
-		return (
-			<div>
-				<DataView.Data>{role.name}</DataView.Data>
-				<DataView.Data>{role.description}</DataView.Data>
-			</div>
-		);
-	},
-});
+export const Data = role => [
+	<DataView.Data>{role.name}</DataView.Data>,
+	<DataView.Data>{role.description}</DataView.Data>,
+];
 
 export default { Headers, Data };

@@ -89,31 +89,29 @@ export default React.createClass({
 				          data={this.state.activities}
 				>
 					<DataView.Headers>
-						<ActivityDataView.Headers/>
+						{ ActivityDataView.Headers }
 						<DataView.Header></DataView.Header>
 					</DataView.Headers>
 					<DataView.Each handler={activity => {
-						return (
-							<div>
-								<ActivityDataView.Data model={activity}/>
-								<DataView.Data>
-									<ButtonGroup fill>
-										<LinkContainer to={`/activities/${activity.id}`}
-										               query={{ return_to: '/activities' }}
-										>
-											<Button bsSize="small"
-											        disabled={!canEditActivity}
-											>Edit</Button>
-										</LinkContainer>
+						return _.flatten([
+							ActivityDataView.Data(activity),
+							<DataView.Data>
+								<ButtonGroup fill>
+									<LinkContainer to={`/activities/${activity.id}`}
+									               query={{ return_to: '/activities' }}
+									>
 										<Button bsSize="small"
-										        bsStyle="danger"
-										        disabled={!canRemoveActivity}
-										        onClick={this.onRemoveActivity.bind(this, activity)}
-										>Remove</Button>
-									</ButtonGroup>
-								</DataView.Data>
-							</div>
-						);
+										        disabled={!canEditActivity}
+										>Edit</Button>
+									</LinkContainer>
+									<Button bsSize="small"
+									        bsStyle="danger"
+									        disabled={!canRemoveActivity}
+									        onClick={this.onRemoveActivity.bind(this, activity)}
+									>Remove</Button>
+								</ButtonGroup>
+							</DataView.Data>,
+						]);
 					}}/>
 				</DataView>
 				<LinkContainer to="/activities/new"

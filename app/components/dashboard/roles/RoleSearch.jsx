@@ -89,31 +89,29 @@ export default React.createClass({
 				          data={this.state.roles}
 				>
 					<DataView.Headers>
-						<RoleDataView.Headers/>
+						{ RoleDataView.Headers }
 						<DataView.Header></DataView.Header>
 					</DataView.Headers>
 					<DataView.Each handler={ role => {
-						return (
-							<div>
-								<RoleDataView.Data model={role}/>
-								<DataView.Data>
-									<ButtonGroup fill>
-										<LinkContainer to={`/roles/${role.id}`}
-										               query={{ return_to: '/roles' }}
-										>
-											<Button bsSize="small"
-											        disabled={!canEditRole}
-											>Edit</Button>
-										</LinkContainer>
+						return _.flatten([
+							RoleDataView.Data(role),
+							<DataView.Data>
+								<ButtonGroup fill>
+									<LinkContainer to={`/roles/${role.id}`}
+									               query={{ return_to: '/roles' }}
+									>
 										<Button bsSize="small"
-										        bsStyle="danger"
-										        disabled={!canRemoveRole}
-										        onClick={this.onRemoveRole.bind(this, role)}
-										>Remove</Button>
-									</ButtonGroup>
-								</DataView.Data>
-							</div>
-						);
+										        disabled={!canEditRole}
+										>Edit</Button>
+									</LinkContainer>
+									<Button bsSize="small"
+									        bsStyle="danger"
+									        disabled={!canRemoveRole}
+									        onClick={this.onRemoveRole.bind(this, role)}
+									>Remove</Button>
+								</ButtonGroup>
+							</DataView.Data>,
+						]);
 					}}/>
 				</DataView>
 				<LinkContainer to="/roles/new"

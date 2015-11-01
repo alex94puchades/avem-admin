@@ -91,31 +91,29 @@ export default React.createClass({
 				          data={this.state.members}
 				>
 					<DataView.Headers>
-						<MemberDataView.Headers/>
+						{ MemberDataView.Headers }
 						<DataView.Header></DataView.Header>
 					</DataView.Headers>
 					<DataView.Each handler={ member => {
-						return (
-							<div>
-								<MemberDataView.Data model={member}/>
-								<DataView.Data>
-										<ButtonGroup fill>
-										<LinkContainer to={`/members/${member.id}`}
-										               query={{ return_to: '/members' }}
-										>
-											<Button bsSize="small"
-											        disabled={!canEditMember}
-											>Edit</Button>
-										</LinkContainer>
+						return _.flatten([
+							MemberDataView.Data(member),
+							<DataView.Data>
+									<ButtonGroup fill>
+									<LinkContainer to={`/members/${member.id}`}
+									               query={{ return_to: '/members' }}
+									>
 										<Button bsSize="small"
-										        bsStyle="danger"
-										        disabled={!canRemoveMember}
-										        onClick={this.onRemoveMember.bind(this, member)}
-										>Remove</Button>
-									</ButtonGroup>
-								</DataView.Data>
-							</div>
-						);
+										        disabled={!canEditMember}
+										>Edit</Button>
+									</LinkContainer>
+									<Button bsSize="small"
+									        bsStyle="danger"
+									        disabled={!canRemoveMember}
+									        onClick={this.onRemoveMember.bind(this, member)}
+									>Remove</Button>
+								</ButtonGroup>
+							</DataView.Data>,
+						]);
 					}}/>
 				</DataView>
 				<LinkContainer to="/members/new"
