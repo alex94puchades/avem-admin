@@ -136,6 +136,7 @@ export default React.createClass({
 				<Input disabled
 				       type="date"
 				       label="Birthday"
+				       placeholder="dd/mm/yyyy"
 				       readOnly={!canEditMember}
 				       onChange={this.onBirthdayChanged}
 				       value={memberData.attributes.birthday}
@@ -153,6 +154,7 @@ export default React.createClass({
 				</Input>
 				<Input type="date"
 				       label="Renew date"
+				       placeholder="dd/mm/yyyy"
 				       onChange={this.onRenewDateChanged}
 				       value={memberData.attributes['renew-date']}
 				       readOnly={!canEditMember || !canRenewMember}

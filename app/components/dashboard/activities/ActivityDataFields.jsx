@@ -138,6 +138,7 @@ export default React.createClass({
 				<Input required
 				       type="date"
 				       label="Start date"
+				       placeholder="dd/mm/yyyy"
 				       readOnly={!canEditActivity}
 				       onChange={this.onStartDateChanged}
 				       value={activityData.attributes['start-date']}
@@ -145,6 +146,7 @@ export default React.createClass({
 				<Input required
 				       type="date"
 				       label="End date"
+				       placeholder="dd/mm/yyyy"
 				       readOnly={!canEditActivity}
 				       onChange={this.onEndDateChanged}
 				       value={activityData.attributes['end-date']}
