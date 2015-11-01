@@ -2,7 +2,7 @@ import 'bootstrap/less/bootstrap.less';
 
 import _ from 'lodash';
 import React from 'react';
-import {Input} from 'react-bootstrap';
+import {Button, Glyphicon, Input} from 'react-bootstrap';
 
 export default React.createClass({
 	propTypes: {
@@ -66,6 +66,10 @@ export default React.createClass({
 	
 	onSubmitForm: function(event) {
 		event.preventDefault();
+		this.onSubmitSearch(event);
+	},
+	
+	onSubmitSearch: function(event) {
 		let searchData = this.parseData(this.state.searchString);
 		this.props.onSearch(searchData);
 	},
@@ -82,6 +86,11 @@ export default React.createClass({
 				       value={this.state.searchString}
 				       placeholder={this.props.placeholder}
 				       onChange={this.onSearchStringChanged}
+				       buttonAfter={
+				           <Button onClick={this.onSubmitSearch}>
+				               <Glyphicon glyph="search"/>
+				           </Button>
+				       }
 				/>
 			</form>
 		);
