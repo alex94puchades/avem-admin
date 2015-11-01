@@ -3,18 +3,33 @@ var htmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
 	target: 'web',
-	entry: './app/index.jsx',
+	entry: {
+		app: './app/index.jsx',
+		vendor: [
+			'cookies-js',
+			'lodash',
+			'react',
+			'reflux',
+			'react-dom',
+			'react-router',
+			'react-bootstrap',
+			'react-router-bootstrap',
+			'superagent',
+			'superagent-jsonapify',
+		],
+	},
 	plugins: [
 		new webpack.optimize.DedupePlugin,
 		new webpack.optimize.UglifyJsPlugin,
+		new webpack.optimize.CommonsChunkPlugin('vendor'),
 		new htmlWebpackPlugin({
 			title: 'AVEM - Admin',
-			favicon: './app/favicon.ico',
+			favicon: 'app/favicon.ico',
 		}),
 	],
 	output: {
 		path: './dist',
-		filename: '[name].[hash].js',
+		filename: '[name].js',
 	},
 	module: {
 		loaders: [{
